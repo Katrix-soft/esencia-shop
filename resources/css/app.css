@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/container-queries";
+
+@theme {
+    --color-on-secondary-container: #5e5548;
+    --color-surface-dim: #dbd7cf;
+    --color-on-tertiary: #ffffff;
+    --color-primary: #4a7c59;
+    --color-surface-bright: #faf6f0;
+    --color-on-primary-container: #d8f0de;
+    --color-on-background: #2e3230;
+    --color-error: #b83230;
+    --color-inverse-on-surface: #f5f0e8;
+    --color-tertiary-fixed: #f8e0a8;
+    --color-outline-variant: #c4c8bc;
+    --color-surface-container-lowest: #ffffff;
+    --color-on-secondary: #ffffff;
+    --color-surface-container-low: #f5f1ea;
+    --color-on-primary-fixed-variant: #2a6038;
+    --color-surface-tint: #4a7c59;
+    --color-tertiary-fixed-dim: #dcc48e;
+    --color-on-primary-fixed: #002110;
+    --color-on-error-container: #690005;
+    --color-outline: #74796e;
+    --color-on-secondary-fixed-variant: #4a4538;
+    --color-on-primary: #ffffff;
+    --color-on-error: #ffffff;
+    --color-error-container: #ffdad8;
+    --color-primary-container: #78a886;
+    --color-secondary-container: #f0e8db;
+    --color-surface-container-high: #eae6de;
+    --color-secondary: #6b6358;
+    --color-on-surface: #2e3230;
+    --color-surface-container-highest: #e4e0d8;
+    --color-surface: #faf6f0;
+    --color-secondary-fixed: #f0e8db;
+    --color-on-tertiary-fixed: #221a05;
+    --color-secondary-fixed-dim: #d4ccbf;
+    --color-primary-fixed-dim: #8ecf9e;
+    --color-on-tertiary-container: #554020;
+    --color-tertiary: #705c30;
+    --color-background: #faf6f0;
+    --color-inverse-surface: #2e3230;
+    --color-tertiary-container: #c4a66a;
+    --color-on-tertiary-fixed-variant: #554020;
+    --color-on-secondary-fixed: #1e1a13;
+    --color-inverse-primary: #8ecf9e;
+    --color-surface-variant: #e4e0d8;
+    --color-primary-fixed: #c8e8d0;
+    --color-on-surface-variant: #4a4e4a;
+    --color-surface-container: #f0ece4;
+
+    --radius-DEFAULT: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-2xl: 2rem;
+    --radius-full: 9999px;
+
+    --font-headline: "Literata", serif;
+    --font-display: "Literata", serif;
+    --font-body: "Nunito Sans", sans-serif;
+    --font-label: "Nunito Sans", sans-serif;
+}
+
+@utility material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    font-feature-settings: 'liga';
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle scrollbar for elegant UI */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-surface); 
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-surface-variant); 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-outline-variant); 
+}
