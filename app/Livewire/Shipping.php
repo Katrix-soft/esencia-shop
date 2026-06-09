@@ -27,7 +27,28 @@ class Shipping extends Component
 
     public function mount()
     {
-        $this->items = session()->get('cart', []);
+        $content = \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->content();
+        $this->items = [];
+        foreach ($content as $item) {
+            $stock = 0;
+            if (is_numeric($item->id)) {
+                $product = \App\Models\Product::find($item->id);
+                $stock = $product ? (int) $product->stock : 0;
+            }
+
+            $hasStockError = (is_numeric($item->id) && $item->qty > $stock);
+
+            $this->items[] = [
+                'id' => $item->id,
+                'name' => $item->name,
+                'type' => $item->options->type ?? 'Fragancia',
+                'size' => $item->options->size ?? '50ml',
+                'price' => $item->price,
+                'quantity' => $item->qty,
+                'img' => $item->options->image ?? '',
+                'has_stock_error' => $hasStockError
+            ];
+        }
         
         // If the cart is empty, redirect back to cart
         if (count($this->items) === 0) {
@@ -35,11 +56,26 @@ class Shipping extends Component
         }
     }
 
+    public function checkStock()
+    {
+        foreach ($this->items as &$item) {
+            $stock = 0;
+            if (is_numeric($item['id'])) {
+                $product = \App\Models\Product::find($item['id']);
+                $stock = $product ? (int) $product->stock : 0;
+            }
+            $item['has_stock_error'] = (is_numeric($item['id']) && $item['quantity'] > $stock);
+        }
+        unset($item);
+    }
+
     public function getSubtotalProperty()
     {
         $subtotal = 0;
         foreach ($this->items as $item) {
-            $subtotal += $item['price'] * $item['quantity'];
+            if (empty($item['has_stock_error'])) {
+                $subtotal += $item['price'] * $item['quantity'];
+            }
         }
         return $subtotal;
     }
@@ -87,8 +123,51 @@ class Shipping extends Component
             'shipping_cost' => $this->shippingCost,
         ]);
 
+        // VERIFICACIÓN DE STOCK EN TIEMPO REAL (Justo antes de pagar)
+        $stockChanged = false;
+        $validItemsCount = 0;
+        foreach ($this->items as &$item) {
+            // Ignorar los que ya sabíamos que no tenían stock
+            if (!empty($item['has_stock_error'])) continue;
+
+            $stock = 0;
+            if (is_numeric($item['id'])) {
+                $product = \App\Models\Product::find($item['id']);
+                $stock = $product ? (int) $product->stock : 0;
+            }
+
+            // Si el stock bajó y ya no alcanza...
+            if ($item['quantity'] > $stock) {
+                $item['has_stock_error'] = true;
+                $stockChanged = true;
+            } else {
+                $validItemsCount++;
+            }
+        }
+        unset($item); // Evitar corrupción del array en el siguiente foreach
+
+        if ($stockChanged) {
+            $this->dispatch('payment-error'); // Ocultar overlay de carga
+            if ($validItemsCount === 0) {
+                $this->dispatch('swal', [
+                    'icon' => 'error',
+                    'title' => 'Stock agotado',
+                    'text' => 'Lo sentimos, alguien más compró los últimos productos de tu carrito. No queda stock disponible.'
+                ]);
+            } else {
+                $this->dispatch('swal', [
+                    'icon' => 'warning',
+                    'title' => 'Cambio en el stock',
+                    'text' => 'Algunos productos de tu carrito se agotaron mientras completabas tus datos. El resumen se ha actualizado.'
+                ]);
+            }
+            return;
+        }
+
         $preferenceItems = [];
         foreach ($this->items as $item) {
+            if (!empty($item['has_stock_error'])) continue;
+
             $preferenceItems[] = [
                 'title' => $item['name'] . ' (' . ($item['size'] ?? 'Decant 10ml') . ')',
                 'quantity' => (int) $item['quantity'],
@@ -175,7 +254,13 @@ class Shipping extends Component
                 
                 $itemStrings = [];
                 foreach ($this->items as $item) {
+                    if (!empty($item['has_stock_error'])) continue;
                     $itemStrings[] = $item['quantity'] . 'x ' . $item['name'] . ' (' . ($item['size'] ?? 'Decant 10ml') . ')';
+                    
+                    // Descontar stock real de la base de datos
+                    if (is_numeric($item['id'])) {
+                        \App\Models\Product::where('id', $item['id'])->decrement('stock', $item['quantity']);
+                    }
                 }
                 
                 $orders[] = [
@@ -224,7 +309,7 @@ class Shipping extends Component
                 }
 
                 // Clear the cart on successful/pending payment
-                session()->forget('cart');
+                \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->destroy();
                 $this->items = [];
                 
                 return [

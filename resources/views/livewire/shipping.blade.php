@@ -358,11 +358,13 @@
                 
                 <!-- Items list -->
                 <ul class="divide-y divide-outline-variant/30 mb-6" role="list">
+                    @php $hasStockErrors = false; @endphp
                     @foreach($items as $item)
+                    @php if(!empty($item['has_stock_error'])) $hasStockErrors = true; @endphp
                     <li class="flex py-4">
                         <div class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-outline-variant/20 bg-surface-bright">
                             @if(isset($item['img']))
-                                <img alt="{{ $item['name'] }}" class="h-full w-full object-cover object-center" src="{{ $item['img'] }}"/>
+                                <img alt="{{ $item['name'] }}" class="h-full w-full object-cover object-center {{ !empty($item['has_stock_error']) ? 'opacity-50 grayscale' : '' }}" src="{{ $item['img'] }}"/>
                             @else
                                 <div class="h-full w-full flex items-center justify-center bg-surface-container">
                                     <span class="material-symbols-outlined text-outline-variant text-2xl">local_florist</span>
@@ -372,10 +374,17 @@
                         <div class="ml-4 flex flex-1 flex-col">
                             <div>
                                 <div class="flex justify-between text-sm font-medium text-on-surface">
-                                    <h4 class="font-bold">{{ $item['name'] }}</h4>
-                                    <p class="ml-4 font-bold text-primary">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
+                                    <h4 class="font-bold {{ !empty($item['has_stock_error']) ? 'text-error' : '' }}">{{ $item['name'] }}</h4>
+                                    @if(!empty($item['has_stock_error']))
+                                        <p class="ml-4 font-bold text-outline-variant line-through">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
+                                    @else
+                                        <p class="ml-4 font-bold text-primary">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
+                                    @endif
                                 </div>
                                 <p class="mt-1 text-xs text-secondary">{{ $item['size'] ?? 'Decant 10ml' }} · {{ $item['type'] ?? 'Aroma' }}</p>
+                                @if(!empty($item['has_stock_error']))
+                                    <span class="text-[10px] text-error font-bold block mt-1">Stock insuficiente</span>
+                                @endif
                             </div>
                             <div class="flex flex-1 items-end justify-between text-xs mt-2">
                                 <p class="text-secondary">Cant: {{ $item['quantity'] }}</p>
@@ -384,6 +393,16 @@
                     </li>
                     @endforeach
                 </ul>
+
+                @if ($hasStockErrors)
+                    <div class="p-4 bg-error-container/20 border border-error/30 rounded-xl text-center mb-6">
+                        <p class="text-xs text-error font-bold uppercase tracking-wider mb-1">Ajuste de Stock</p>
+                        <p class="text-xs text-on-surface-variant leading-normal mb-3">Los productos con stock insuficiente no se incluirán en el pago.</p>
+                        <a href="{{ route('cart') }}" wire:navigate class="inline-block w-full py-2 bg-error text-on-error hover:bg-error/90 text-xs font-bold rounded-lg transition-all shadow-sm">
+                            Modificar carrito
+                        </a>
+                    </div>
+                @endif
 
                 <!-- Totals -->
                 <dl class="space-y-4 text-sm text-on-surface-variant">
