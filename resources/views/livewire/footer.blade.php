@@ -8,13 +8,19 @@
         <!-- Links -->
         <ul class="flex flex-wrap justify-center gap-6">
             <li>
-                <a class="text-secondary hover:text-primary hover:underline decoration-primary opacity-90 hover:opacity-100 transition-all" href="#">Términos</a>
+                <a class="text-secondary hover:text-primary hover:underline decoration-primary opacity-90 hover:opacity-100 transition-all flex items-center gap-1" href="https://wa.me/{{ str_replace(['+', ' '], '', cache('store_whatsapp', '54911223344')) }}" target="_blank">
+                    <span class="material-symbols-outlined text-sm">chat</span> WhatsApp Soporte
+                </a>
             </li>
             <li>
-                <a class="text-secondary hover:text-primary hover:underline decoration-primary opacity-90 hover:opacity-100 transition-all" href="#">Privacidad</a>
+                <a class="text-secondary hover:text-primary hover:underline decoration-primary opacity-90 hover:opacity-100 transition-all flex items-center gap-1" href="https://instagram.com/{{ str_replace('@', '', cache('store_instagram', 'esencia.latam')) }}" target="_blank">
+                    <span class="material-symbols-outlined text-sm">photo_camera</span> Instagram
+                </a>
             </li>
             <li>
-                <a class="text-secondary hover:text-primary hover:underline decoration-primary opacity-90 hover:opacity-100 transition-all" href="#">WhatsApp Soporte</a>
+                <a class="text-secondary hover:text-primary hover:underline decoration-primary opacity-90 hover:opacity-100 transition-all flex items-center gap-1" href="mailto:{{ cache('store_email', 'soporte@esencia.com') }}">
+                    <span class="material-symbols-outlined text-sm">mail</span> {{ cache('store_email', 'soporte@esencia.com') }}
+                </a>
             </li>
             <li>
                 <a class="text-secondary hover:text-primary hover:underline decoration-primary opacity-90 hover:opacity-100 transition-all" href="#">Guía Olfativa</a>
@@ -23,7 +29,7 @@
         
         <!-- Copyright -->
         <div class="mt-4 text-xs">
-            © {{ date('Y') }} Esencia - Perfumería Inteligente LATAM
+            © {{ date('Y') }} {{ cache('store_name', 'Esencia') }} - Perfumería Inteligente LATAM
         </div>
     </div>
 </footer>

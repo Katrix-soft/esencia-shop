@@ -25,7 +25,7 @@
                     <li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-lg">check_circle</span> Estuche de cartón reciclado premium</li>
                 </ul>
                 <div class="mt-auto flex items-center justify-between">
-                    <span class="text-2xl font-headline font-bold text-primary">$450 MXN</span>
+                    <span class="text-2xl font-headline font-bold text-primary">{{ cache('store_currency', 'ARS') === 'EUR' ? '€' : '$' }}450 {{ cache('store_currency', 'ARS') !== 'EUR' ? cache('store_currency', 'ARS') : '' }}</span>
                     <button wire:click="addToCart('discovery')" class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold flex items-center gap-2 active:scale-95 transition-all hover:bg-opacity-90">
                         <span class="material-symbols-outlined text-sm">shopping_bag</span>
                         Añadir al Carrito
@@ -44,7 +44,7 @@
                 <p class="text-on-surface-variant font-body text-sm mb-6">El regalo definitivo. Una experiencia completa que combina lujo y naturaleza en un empaque artesanal.</p>
                 <div class="mt-auto">
                     <div class="flex items-center justify-between mb-4">
-                        <span class="text-xl font-headline font-bold text-primary">$2,400 MXN</span>
+                        <span class="text-xl font-headline font-bold text-primary">{{ cache('store_currency', 'ARS') === 'EUR' ? '€' : '$' }}2,400 {{ cache('store_currency', 'ARS') !== 'EUR' ? cache('store_currency', 'ARS') : '' }}</span>
                         <span class="text-xs bg-tertiary-container/30 text-on-tertiary-container px-2 py-1 rounded">Edición Limitada</span>
                     </div>
                     <button wire:click="addToCart('giftbox')" class="w-full bg-secondary text-on-secondary px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2 active:scale-95 transition-all hover:bg-on-surface">
@@ -61,7 +61,7 @@
                 <h2 class="text-3xl font-headline font-bold text-on-surface mb-4">Exclusive Oud Collection</h2>
                 <p class="text-on-surface-variant font-body mb-6">Una selección de fragancias amaderadas profundas y especias exóticas para los gustos más exigentes y sofisticados.</p>
                 <div class="flex items-center gap-4">
-                    <span class="text-2xl font-headline font-bold text-primary">$5,200 MXN</span>
+                    <span class="text-2xl font-headline font-bold text-primary">{{ cache('store_currency', 'ARS') === 'EUR' ? '€' : '$' }}5,200 {{ cache('store_currency', 'ARS') !== 'EUR' ? cache('store_currency', 'ARS') : '' }}</span>
                     <button wire:click="addToCart('exclusive')" class="bg-primary text-on-primary px-8 py-3 rounded-lg font-bold flex items-center gap-2 active:scale-95 transition-all hover:bg-opacity-90">
                         <span class="material-symbols-outlined text-sm">auto_awesome</span>
                         Lo Quiero

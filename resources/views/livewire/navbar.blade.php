@@ -2,8 +2,12 @@
     <div class="flex justify-between items-center w-full px-6 py-4 max-w-full mx-auto">
         <!-- Brand -->
         <a class="text-2xl font-headline font-bold text-primary flex items-center gap-2" href="{{ route('catalog') }}" wire:navigate>
-            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">spa</span>
-            Esencia
+            @if(cache('store_logo_path'))
+                <img src="{{ asset('storage/' . cache('store_logo_path')) }}" alt="Logo" class="h-8 w-auto object-contain">
+            @else
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">spa</span>
+            @endif
+            {{ cache('store_name', 'Esencia') }}
         </a>
 
         <!-- Navigation Links (Desktop) -->
@@ -46,8 +50,8 @@
                         <div class="px-4 py-2 border-b border-outline-variant/20 text-[10px] text-on-surface-variant font-bold uppercase tracking-wider font-body">
                             Mi Cuenta
                         </div>
-                        @if(auth()->user() && (str_contains(auth()->user()->email, 'admin') || (isset(auth()->user()->is_admin) && auth()->user()->is_admin)))
-                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-primary hover:bg-secondary-container transition-colors font-bold font-body" wire:navigate>
+                        @if(auth()->user() && (auth()->user()->hasRole('superadmin') || auth()->user()->hasRole('admin') || str_contains(auth()->user()->email, 'admin') || (isset(auth()->user()->is_admin) && auth()->user()->is_admin)))
+                            <a href="{{ auth()->user()->hasRole('superadmin') ? route('superadmin.dashboard') : route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-primary hover:bg-secondary-container transition-colors font-bold font-body" wire:navigate>
                                 <span class="material-symbols-outlined text-sm">admin_panel_settings</span>
                                 Administración
                             </a>

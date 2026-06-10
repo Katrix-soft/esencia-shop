@@ -8,6 +8,7 @@ use App\Livewire\Cart;
 use App\Livewire\Shipping;
 use App\Livewire\Auth\Login;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\SuperAdmin\Dashboard as SuperAdminDashboard;
 use App\Livewire\Client\Portal as ClientPortal;
 
 use App\Http\Controllers\MercadoPagoWebhookController;
@@ -19,6 +20,7 @@ Route::get('/carrito', Cart::class)->name('cart');
 Route::get('/envio', Shipping::class)->name('shipping');
 Route::get('/login', Login::class)->name('login');
 Route::get('/admin/dashboard', AdminDashboard::class)->name('admin.dashboard');
+Route::get('/super-admin/dashboard', SuperAdminDashboard::class)->name('superadmin.dashboard');
 Route::get('/mi-cuenta', ClientPortal::class)->name('client.portal');
 
 Route::post('/mercadopago/webhook', [MercadoPagoWebhookController::class, 'handle'])->name('mercadopago.webhook');

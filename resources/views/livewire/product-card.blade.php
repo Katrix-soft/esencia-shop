@@ -36,8 +36,12 @@
         <!-- Fragella Headless Widget -->
         <div class="fragella-inject-accords mb-4" data-fragrance-name="{{ $product->name }}"></div>
         
+        @php
+            $currencyCode = cache('store_currency', 'ARS');
+            $currencySymbol = $currencyCode === 'EUR' ? '€' : '$';
+        @endphp
         <div class="mt-auto pt-4 border-t border-surface-container-highest flex items-center justify-between">
-            <span class="font-headline font-bold text-lg text-primary">${{ number_format(($product->price ?? 0) * 1000, 0, ',', '.') }}</span>
+            <span class="font-headline font-bold text-lg text-primary">{{ $currencySymbol }}{{ number_format(($product->price ?? 0) * 1000, 0, ',', '.') }} <span class="text-xs text-secondary ml-1">{{ $currencyCode }}</span></span>
             <button wire:click="addToCart" class="bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-xl text-sm font-bold transition-colors">
                 Añadir al carrito
             </button>
