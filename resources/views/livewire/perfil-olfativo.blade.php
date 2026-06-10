@@ -1,17 +1,4 @@
 <div class="w-full relative">
-    <!-- Profile Success Alert -->
-    @if (session()->has('profile_success'))
-        <div class="max-w-7xl mx-auto px-6 pt-28 -mb-12">
-            <div class="p-4 bg-on-primary-container text-on-primary-fixed-variant rounded-xl border border-primary/20 flex items-start gap-3 shadow-md animate-fade-in">
-                <span class="material-symbols-outlined text-on-primary-fixed-variant mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                <div>
-                    <h4 class="font-bold text-on-primary-fixed-variant text-sm mb-1 font-body">¡Perfil Actualizado!</h4>
-                    <p class="text-xs leading-relaxed font-body">{{ session('profile_success') }}</p>
-                </div>
-            </div>
-        </div>
-    @endif
-
     <!-- Hero Header -->
     <header class="relative h-[60vh] min-h-[450px] flex items-center justify-center overflow-hidden pt-20">
         <div class="absolute inset-0 z-0">
@@ -169,7 +156,7 @@
                             <h3 class="text-2xl font-bold mb-4 font-headline text-on-surface">{{ $prod['name'] }}</h3>
                             <div class="flex justify-between items-center">
                                 <span class="text-xl font-display text-primary font-body">${{ number_format($prod['price'], 2) }}</span>
-                                <button class="w-10 h-10 rounded-full border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors">
+                                <button wire:click="addToCart('{{ $prod['name'] }}')" class="w-10 h-10 rounded-full border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors">
                                     <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
                                 </button>
                             </div>
@@ -181,7 +168,20 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="max-w-7xl mx-auto px-6 py-24 animate-fade-in">
+    <section class="max-w-7xl mx-auto px-6 py-24 animate-fade-in" id="cta-section">
+        <!-- Profile Success Alert -->
+        @if (session()->has('profile_success'))
+            <div class="mb-6">
+                <div class="p-4 bg-on-primary-container text-on-primary-fixed-variant rounded-xl border border-primary/20 flex items-start gap-3 shadow-md animate-fade-in">
+                    <span class="material-symbols-outlined text-on-primary-fixed-variant mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                    <div>
+                        <h4 class="font-bold text-on-primary-fixed-variant text-sm mb-1 font-body">¡Perfil Actualizado!</h4>
+                        <p class="text-xs leading-relaxed font-body">{{ session('profile_success') }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <div class="bg-primary rounded-xl p-12 text-on-primary relative overflow-hidden flex flex-col items-center text-center">
             <div class="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
             <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-black/10 rounded-full blur-3xl animate-pulse"></div>

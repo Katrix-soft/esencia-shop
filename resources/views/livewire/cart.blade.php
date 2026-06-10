@@ -43,7 +43,14 @@
                                         <span class="material-symbols-outlined text-sm">add</span>
                                     </button>
                                 </div>
-                                <div class="text-xl font-bold text-primary">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</div>
+                                <div class="flex flex-col items-end">
+                                    @if($item['has_stock_error'])
+                                        <span class="text-xs text-error font-bold block mb-1">Stock superado</span>
+                                        <div class="text-lg font-bold text-outline-variant line-through">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</div>
+                                    @else
+                                        <div class="text-xl font-bold text-primary">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -51,10 +58,11 @@
             </div>
 
             <!-- Sidebar (Right Column) -->
-            <div class="lg:col-span-4 flex flex-col gap-8">
-                <!-- Order Summary Card -->
-                <div class="bg-surface-container-low rounded-xl p-8 shadow-[0_4px_20px_rgba(46,50,48,0.06)] flex flex-col gap-6 sticky top-28">
-                    <h2 class="text-2xl font-headline font-bold text-on-surface border-b border-outline-variant/30 pb-4">Resumen</h2>
+            <div class="lg:col-span-4">
+                <div class="sticky top-28 flex flex-col gap-8">
+                    <!-- Order Summary Card -->
+                    <div class="bg-surface-container-low rounded-xl p-6 lg:p-8 shadow-[0_4px_20px_rgba(46,50,48,0.06)] flex flex-col gap-6">
+                        <h2 class="text-2xl font-headline font-bold text-on-surface border-b border-outline-variant/30 pb-4">Resumen</h2>
                     <div class="flex flex-col gap-3 text-on-surface-variant">
                         <div class="flex justify-between">
                             <span>Subtotal</span>
@@ -110,6 +118,7 @@
                         </button>
                     </div>
                 @endif
+                </div>
             </div>
         </div>
     @else

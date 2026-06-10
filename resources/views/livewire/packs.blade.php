@@ -26,7 +26,7 @@
                 </ul>
                 <div class="mt-auto flex items-center justify-between">
                     <span class="text-2xl font-headline font-bold text-primary">$450 MXN</span>
-                    <button class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold flex items-center gap-2 active:scale-95 transition-all hover:bg-opacity-90">
+                    <button wire:click="addToCart('discovery')" class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold flex items-center gap-2 active:scale-95 transition-all hover:bg-opacity-90">
                         <span class="material-symbols-outlined text-sm">shopping_bag</span>
                         Añadir al Carrito
                     </button>
@@ -47,7 +47,7 @@
                         <span class="text-xl font-headline font-bold text-primary">$2,400 MXN</span>
                         <span class="text-xs bg-tertiary-container/30 text-on-tertiary-container px-2 py-1 rounded">Edición Limitada</span>
                     </div>
-                    <button class="w-full bg-secondary text-on-secondary px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2 active:scale-95 transition-all hover:bg-on-surface">
+                    <button wire:click="addToCart('giftbox')" class="w-full bg-secondary text-on-secondary px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2 active:scale-95 transition-all hover:bg-on-surface">
                         <span class="material-symbols-outlined text-sm">card_giftcard</span>
                         Añadir al Carrito
                     </button>
@@ -62,7 +62,7 @@
                 <p class="text-on-surface-variant font-body mb-6">Una selección de fragancias amaderadas profundas y especias exóticas para los gustos más exigentes y sofisticados.</p>
                 <div class="flex items-center gap-4">
                     <span class="text-2xl font-headline font-bold text-primary">$5,200 MXN</span>
-                    <button class="bg-primary text-on-primary px-8 py-3 rounded-lg font-bold flex items-center gap-2 active:scale-95 transition-all hover:bg-opacity-90">
+                    <button wire:click="addToCart('exclusive')" class="bg-primary text-on-primary px-8 py-3 rounded-lg font-bold flex items-center gap-2 active:scale-95 transition-all hover:bg-opacity-90">
                         <span class="material-symbols-outlined text-sm">auto_awesome</span>
                         Lo Quiero
                     </button>
@@ -82,8 +82,8 @@
                 <h2 class="text-4xl md:text-5xl font-headline font-bold text-on-secondary-container mb-6">Crea tu propio set personalizado</h2>
                 <p class="text-on-secondary-container/80 text-lg font-body mb-8">Elige 5 fragancias que definan tu estilo y nosotros las prepararemos en un estuche exclusivo hecho a mano con materiales sustentables.</p>
                 <div class="flex flex-wrap gap-4">
-                    <button class="bg-primary text-on-primary px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-xl transition-all active:scale-95">Comenzar a Crear</button>
-                    <button class="bg-transparent border-2 border-primary text-primary px-8 py-4 rounded-full font-bold hover:bg-primary/5 transition-all">Ver Guía Olfativa</button>
+                    <a href="{{ route('catalog') }}" wire:navigate class="bg-primary text-on-primary px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 inline-block text-center">Comenzar a Crear</a>
+                    <a href="{{ route('perfil-olfativo') }}" wire:navigate class="bg-transparent border-2 border-primary text-primary px-8 py-4 rounded-full font-bold hover:bg-primary/5 transition-all inline-block text-center">Ver Guía Olfativa</a>
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-4">

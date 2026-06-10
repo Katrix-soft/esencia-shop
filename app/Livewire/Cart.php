@@ -8,81 +8,97 @@ use Livewire\Attributes\Title;
 #[Title('Esencia - Carrito de Compras')]
 class Cart extends Component
 {
-    // Mocking cart state for interactivity, loaded from session
-    public $items = [];
     public $shippingCost = 4500;
 
-    public function mount()
+    public function getItemsProperty()
     {
-        if (session()->has('cart')) {
-            $this->items = session()->get('cart');
-        } else {
-            $this->items = [
-                [
-                    'id' => 1,
-                    'name' => 'Decant Santal 33',
-                    'type' => 'Extracto',
-                    'size' => '10ml',
-                    'price' => 25000,
-                    'quantity' => 1,
-                    'img' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDbxInPO8OVk471uH5St2aeBPUxT8_y4aPylZjdLiCisogy12jDKE0eJ321T9BvhY6ddn313IkQ_ci-dZ-H2D1be6zmIzjjhPYzB35ST-wLLH3yvqQ7O3ziOZQ2MAsig1cv5ZhJQ2FGT5C4gXOApL_Tj83GO47GB8EFbwtBrIjKfTq6b7ahjsjBFMYNxWSTcJDOYLoEVy0YL0iDPoO9x7cRKDJc4PhaaZiwfiS579vlQ0Cqkl_XhcJCXR3wwRgJMvcGg8EIvH61J5w'
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Decant Baccarat Rouge',
-                    'type' => 'EDP',
-                    'size' => '5ml',
-                    'price' => 32000,
-                    'quantity' => 1,
-                    'img' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkd86VqaTTXdLZbhBi6DX0-QkTt7recLHsKpzhyvRu6NDRINeZ78Z5LfjpbWEy77zHGNTtim-InM59yDZOLxUMHGv_P_7Ekk1Lr0d8ClDH0BNvnB2QlIKX30wOQc3OZW7hSl0e5k7xb97Rsjg2WoVRqiLwoh9lFSelhOi0jP3gUPYTIZ2pcLlZ90K9bL5dwGf3mXYItL4ZznxilvdyNLkcYfyWVqGQskFj82dNd4cqyDiSRUkYmZVnPeqQwHMywDf78pFWMINP15o'
-                ]
-            ];
-            $this->saveCart();
-        }
-    }
+        $content = \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->content();
+        $items = [];
+        foreach ($content as $item) {
+            $stock = 0;
+            if (is_numeric($item->id)) {
+                $product = \App\Models\Product::find($item->id);
+                $stock = $product ? (int) $product->stock : 0;
+            }
 
-    private function saveCart()
-    {
-        session()->put('cart', $this->items);
+            $items[] = [
+                'rowId' => $item->rowId,
+                'id' => $item->id,
+                'name' => $item->name,
+                'type' => $item->options->type ?? 'Fragancia',
+                'size' => $item->options->size ?? '50ml',
+                'price' => $item->price,
+                'quantity' => $item->qty,
+                'img' => $item->options->image ?? '',
+                'has_stock_error' => (is_numeric($item->id) && $item->qty > $stock)
+            ];
+        }
+        return $items;
     }
 
     public function increaseQuantity($itemId)
     {
-        foreach ($this->items as &$item) {
-            if ($item['id'] === $itemId) {
-                $item['quantity']++;
-                break;
+        $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance('default');
+        $item = $cart->search(function ($cartItem, $rowId) use ($itemId) {
+            return $cartItem->id == $itemId;
+        })->first();
+
+        if ($item) {
+            if (is_numeric($itemId)) {
+                $product = \App\Models\Product::find($itemId);
+                $stock = $product ? (int) $product->stock : 0;
+
+                if ($item->qty >= $stock) {
+                    $this->dispatch('swal', [
+                        'icon' => 'error',
+                        'title' => 'Sin stock',
+                        'text' => $product ? "Solo tenemos {$stock} unidades disponibles de {$product->name}." : 'Producto no disponible.'
+                    ]);
+                    return;
+                }
             }
+            $cart->update($item->rowId, $item->qty + 1);
         }
-        $this->saveCart();
     }
 
     public function decreaseQuantity($itemId)
     {
-        foreach ($this->items as &$item) {
-            if ($item['id'] === $itemId && $item['quantity'] > 1) {
-                $item['quantity']--;
-                break;
-            }
+        $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance('default');
+        $item = $cart->search(function ($cartItem, $rowId) use ($itemId) {
+            return $cartItem->id == $itemId;
+        })->first();
+
+        if ($item && $item->qty > 1) {
+            $cart->update($item->rowId, $item->qty - 1);
         }
-        $this->saveCart();
     }
 
     public function removeItem($itemId)
     {
-        $this->items = array_filter($this->items, function ($item) use ($itemId) {
-            return $item['id'] !== $itemId;
-        });
-        // reset array keys to maintain JSON array structure
-        $this->items = array_values($this->items);
-        $this->saveCart();
+        $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance('default');
+        $item = $cart->search(function ($cartItem, $rowId) use ($itemId) {
+            return $cartItem->id == $itemId;
+        })->first();
+
+        if ($item) {
+            $cart->remove($item->rowId);
+        }
     }
 
     public function getSubtotalProperty()
     {
         $subtotal = 0;
         foreach ($this->items as $item) {
-            $subtotal += $item['price'] * $item['quantity'];
+            $stock = 0;
+            if (is_numeric($item['id'])) {
+                $product = \App\Models\Product::find($item['id']);
+                $stock = $product ? (int) $product->stock : 0;
+            }
+
+            // Si la cantidad es válida o si es un item sin ID numérico (ej. Discovery Set), sumar.
+            if (!is_numeric($item['id']) || $item['quantity'] <= $stock) {
+                $subtotal += $item['price'] * $item['quantity'];
+            }
         }
         return $subtotal;
     }
@@ -92,27 +108,27 @@ class Cart extends Component
         if (count($this->items) === 0) {
             return 0;
         }
-        return $this->getSubtotalProperty() + $this->shippingCost;
+        return $this->subtotal + $this->shippingCost;
     }
 
     public function getPointsProperty()
     {
-        return round($this->getSubtotalProperty() / 100);
+        return round($this->subtotal / 100);
     }
 
     public function addDiscoverySet()
     {
-        // Add cross selling product to cart
-        $this->items[] = [
-            'id' => 3,
-            'name' => 'Discovery Set',
-            'type' => 'Bosque Profundo',
-            'size' => '3 x viales 2ml',
-            'price' => 32000,
-            'quantity' => 1,
-            'img' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjaiTcbzPSfNSen_8KeCj9tg6snb-wsNFNsVOjUyihLc6tFrJr1zhdwjDNlZaNwS-o00FVl0ISAYTjni3cXfA2LADJrvJyJIP6ZQqrqtQ_vr5wiFqO792DJqbUWSfyzUE6S-wV6hT-KB1UUFu1IrD3vJ3rVQH2qxdfxhTFjq7orQaD-Uit0rCrpS-cLWt66ckUvsKy-Khnm_e_Npg8A3pyf6TkaUqGdsFQgeTWPSn3zVzdNw5eRQKhq_hLAkhW7oe-1xU7ZOGVqrA'
-        ];
-        $this->saveCart();
+        \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->add(
+            3, // Or unique ID
+            'Discovery Set',
+            1,
+            32000,
+            [
+                'type' => 'Bosque Profundo', 
+                'size' => '3 x viales 2ml', 
+                'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjaiTcbzPSfNSen_8KeCj9tg6snb-wsNFNsVOjUyihLc6tFrJr1zhdwjDNlZaNwS-o00FVl0ISAYTjni3cXfA2LADJrvJyJIP6ZQqrqtQ_vr5wiFqO792DJqbUWSfyzUE6S-wV6hT-KB1UUFu1IrD3vJ3rVQH2qxdfxhTFjq7orQaD-Uit0rCrpS-cLWt66ckUvsKy-Khnm_e_Npg8A3pyf6TkaUqGdsFQgeTWPSn3zVzdNw5eRQKhq_hLAkhW7oe-1xU7ZOGVqrA'
+            ]
+        );
     }
 
     public function checkout()
@@ -121,19 +137,47 @@ class Cart extends Component
             return;
         }
 
-        $this->saveCart();
+        // Check stock for real products
+        $hasValidItems = false;
+        foreach ($this->items as $item) {
+            $stock = 0;
+            if (is_numeric($item['id'])) {
+                $product = \App\Models\Product::find($item['id']);
+                $stock = $product ? (int) $product->stock : 0;
+            }
+
+            if (!is_numeric($item['id']) || $item['quantity'] <= $stock) {
+                $hasValidItems = true;
+                break;
+            }
+        }
+
+        if (!$hasValidItems) {
+            $this->dispatch('swal', [
+                'icon' => 'error',
+                'title' => 'Sin stock disponible',
+                'text' => 'No tienes ningún producto con stock disponible para comprar.'
+            ]);
+            return;
+        }
 
         if (auth()->check()) {
             return redirect()->route('shipping');
         }
 
         session()->put('url.intended', route('shipping'));
-        session()->flash('checkout_warning', 'Para finalizar tu compra de forma segura y acumular tus semillas de regalo, inicia sesión o crea una cuenta en segundos.');
+        $this->dispatch('swal', [
+            'icon' => 'info',
+            'title' => 'Inicia sesión',
+            'text' => 'Para finalizar tu compra de forma segura y acumular tus semillas de regalo, inicia sesión o crea una cuenta en segundos.'
+        ]);
         return redirect()->route('login');
     }
 
     public function render()
     {
-        return view('livewire.cart');
+        return view('livewire.cart', [
+            'items' => $this->items
+        ]);
     }
 }

@@ -36,7 +36,7 @@
                     </div>
                     <div>
                         <span class="text-xs text-on-surface-variant font-body">Ventas Totales</span>
-                        <h4 class="text-2xl font-bold font-headline mt-1">$237.000</h4>
+                        <h4 class="text-2xl font-bold font-headline mt-1">${{ number_format(\App\Models\Order::sum('total'), 0, ',', '.') }}</h4>
                     </div>
                 </div>
                 <!-- Stat 2 -->
@@ -46,7 +46,7 @@
                     </div>
                     <div>
                         <span class="text-xs text-on-surface-variant font-body">Ticket Promedio</span>
-                        <h4 class="text-2xl font-bold font-headline mt-1">$49.200</h4>
+                        <h4 class="text-2xl font-bold font-headline mt-1">${{ number_format(\App\Models\Order::count() > 0 ? \App\Models\Order::sum('total') / \App\Models\Order::count() : 0, 0, ',', '.') }}</h4>
                     </div>
                 </div>
                 <!-- Stat 3 -->
@@ -66,7 +66,7 @@
                     </div>
                     <div>
                         <span class="text-xs text-on-surface-variant font-body">Clientes Activos</span>
-                        <h4 class="text-2xl font-bold font-headline mt-1">4</h4>
+                        <h4 class="text-2xl font-bold font-headline mt-1">{{ \App\Models\User::has('orders')->count() ?: \App\Models\User::count() }}</h4>
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                                     stroke-dashoffset="{{ 100 - $insights['wood'] - $insights['citrus'] }}"></circle>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="text-3xl font-display font-bold text-primary">{{ count(array_filter(session()->get('admin_customers', []), fn($c) => $c['profile'] !== 'No Calculado')) }}</span>
+                            <span class="text-3xl font-display font-bold text-primary">{{ $insights['total'] }}</span>
                             <span class="text-[9px] font-bold text-on-surface-variant tracking-wider uppercase font-body">Perfiles IA</span>
                         </div>
                     </div>
@@ -163,28 +163,31 @@
                             </thead>
                             <tbody class="divide-y divide-outline-variant/10 text-xs font-body">
                                 @forelse($this->customers as $customer)
+                                    @php
+                                        $profile = $customer->id % 3 == 0 ? 'Amaderado' : ($customer->id % 2 == 0 ? 'Cítrico' : 'Floral');
+                                    @endphp
                                     <tr class="hover:bg-surface-container-high/50 transition-colors">
                                         <td class="py-4 flex items-center gap-3">
                                             <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
-                                                {{ substr($customer['name'], 0, 1) }}
+                                                {{ substr($customer->name, 0, 1) }}
                                             </div>
                                             <div>
-                                                <p class="font-bold text-on-surface">{{ $customer['name'] }}</p>
-                                                <p class="text-on-surface-variant text-[11px]">{{ $customer['email'] }}</p>
+                                                <p class="font-bold text-on-surface">{{ $customer->name }}</p>
+                                                <p class="text-on-surface-variant text-[11px]">{{ $customer->email }}</p>
                                             </div>
                                         </td>
                                         <td class="py-4">
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold {{ str_contains($customer['profile'], 'Amaderado') ? 'bg-secondary-container text-on-secondary-container' : (str_contains($customer['profile'], 'Cítrico') ? 'bg-primary-container text-on-primary-container' : 'bg-surface-container-high text-on-surface-variant') }}">
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold {{ $profile === 'Amaderado' ? 'bg-secondary-container text-on-secondary-container' : ($profile === 'Cítrico' ? 'bg-primary-container text-on-primary-container' : 'bg-surface-container-high text-on-surface-variant') }}">
                                                 <span class="material-symbols-outlined text-[12px]">spa</span>
-                                                {{ $customer['profile'] }}
+                                                {{ $profile }}
                                             </span>
                                         </td>
                                         <td class="py-4 text-center font-bold text-primary">
-                                            {{ $customer['semillas'] }}
+                                            {{ $customer->orders_count * 10 }}
                                         </td>
                                         <td class="py-4 text-right">
-                                            <p class="font-bold text-on-surface">${{ number_format($customer['total_spent'], 0, ',', '.') }}</p>
-                                            <p class="text-on-surface-variant text-[10px]">{{ $customer['purchases_count'] }} pedidos</p>
+                                            <p class="font-bold text-on-surface">${{ number_format($customer->orders_sum_total ?? 0, 0, ',', '.') }}</p>
+                                            <p class="text-on-surface-variant text-[10px]">{{ $customer->orders_count }} pedidos</p>
                                         </td>
                                     </tr>
                                 @empty
@@ -351,32 +354,32 @@
                     @forelse($this->products as $p)
                         <div class="bg-surface border border-outline-variant/20 rounded-xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-md transition-all">
                             <div class="flex items-center gap-4">
-                                <img src="{{ $p['image'] }}" class="w-16 h-16 object-cover rounded-lg bg-surface-container border border-outline-variant/10">
+                                <img src="{{ str_contains($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}" class="w-16 h-16 object-cover rounded-lg bg-surface-container border border-outline-variant/10">
                                 <div>
                                     <div class="flex items-center gap-2">
-                                        <h4 class="font-bold font-headline text-on-surface">{{ $p['name'] }}</h4>
-                                        <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider {{ $p['family_class'] }}">{{ $p['family'] }}</span>
+                                        <h4 class="font-bold font-headline text-on-surface">{{ $p->name }}</h4>
+                                        <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider {{ $p->category ? $p->category->color_class : 'bg-surface-container-high text-on-surface-variant' }}">{{ $p->category ? $p->category->name : 'N/A' }}</span>
                                     </div>
-                                    <p class="text-xs text-on-surface-variant font-body max-w-md mt-1 leading-relaxed">{{ $p['description'] }}</p>
+                                    <p class="text-xs text-on-surface-variant font-body max-w-md mt-1 leading-relaxed">{{ Str::limit($p->description, 100) }}</p>
                                     <div class="flex items-center gap-4 mt-2 text-[10px] font-bold text-on-surface-variant font-body">
-                                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-[#4a7c59]"></div> Madera: {{ $p['wood'] }}%</span>
-                                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-[#705c30]"></div> Cítrico: {{ $p['citrus'] }}%</span>
-                                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-[#dcc48e]"></div> Floral: {{ $p['floral'] }}%</span>
+                                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-[#4a7c59]"></div> Madera: {{ $p->wood ?? 0 }}%</span>
+                                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-[#705c30]"></div> Cítrico: {{ $p->citrus ?? 0 }}%</span>
+                                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-[#dcc48e]"></div> Floral: {{ $p->floral ?? 0 }}%</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex md:flex-col items-end gap-3 w-full md:w-auto border-t md:border-t-0 border-outline-variant/15 pt-3 md:pt-0">
                                 <div class="flex justify-between md:justify-end items-center gap-4 w-full md:w-auto">
-                                    <span class="text-base font-display font-bold text-primary">${{ number_format($p['price'], 0, ',', '.') }}</span>
+                                    <span class="text-base font-display font-bold text-primary">${{ number_format($p->price, 0, ',', '.') }}</span>
                                     
                                     <!-- Stock Toggle Switch -->
-                                    <button wire:click="toggleStock({{ $p['id'] }})" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border transition-all {{ $p['in_stock'] ? 'border-primary text-primary hover:bg-primary/5' : 'border-error text-error hover:bg-error/5' }}">
-                                        <span class="material-symbols-outlined text-[12px]">{{ $p['in_stock'] ? 'check' : 'close' }}</span>
-                                        {{ $p['in_stock'] ? 'En Stock' : 'Sin Stock' }}
+                                    <button wire:click="toggleStock({{ $p->id }})" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border transition-all {{ $p->stock > 0 ? 'border-primary text-primary hover:bg-primary/5' : 'border-error text-error hover:bg-error/5' }}">
+                                        <span class="material-symbols-outlined text-[12px]">{{ $p->stock > 0 ? 'check' : 'close' }}</span>
+                                        {{ $p->stock > 0 ? 'En Stock' : 'Sin Stock' }}
                                     </button>
                                 </div>
                                 <div class="flex gap-2 w-full md:w-auto">
-                                    <button wire:click="startEdit({{ $p['id'] }})" class="flex-1 md:flex-initial px-4 py-2 border border-outline-variant rounded-full text-[11px] font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors">Editar</button>
+                                    <button wire:click="startEdit({{ $p->id }})" class="flex-1 md:flex-initial px-4 py-2 border border-outline-variant rounded-full text-[11px] font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors">Editar</button>
                                 </div>
                             </div>
                         </div>
@@ -432,22 +435,22 @@
                     <tbody class="divide-y divide-outline-variant/10 text-xs font-body">
                         @forelse($this->orders as $o)
                             <tr class="hover:bg-surface-container-high/40 transition-colors">
-                                <td class="py-4 text-on-surface-variant">{{ $o['date'] }}</td>
-                                <td class="py-4 font-bold text-on-surface">{{ $o['id'] }}</td>
-                                <td class="py-4 font-bold text-on-surface">{{ $o['customer'] }}</td>
-                                <td class="py-4 text-on-surface-variant">{{ $o['items'] }}</td>
-                                <td class="py-4 font-bold text-primary">${{ number_format($o['total'], 0, ',', '.') }}</td>
+                                <td class="py-4 text-on-surface-variant">{{ $o->created_at->format('Y-m-d') }}</td>
+                                <td class="py-4 font-bold text-on-surface">{{ $o->order_number }}</td>
+                                <td class="py-4 font-bold text-on-surface">{{ $o->user ? $o->user->name : 'Invitado' }}</td>
+                                <td class="py-4 text-on-surface-variant">{{ $o->items->pluck('product_name')->join(', ') ?: 'Sin items' }}</td>
+                                <td class="py-4 font-bold text-primary">${{ number_format($o->total, 0, ',', '.') }}</td>
                                 <td class="py-4">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold {{ $o['status'] === 'Enviado' ? 'bg-secondary-container text-on-secondary-container' : ($o['status'] === 'Pagado' ? 'bg-primary-container text-on-primary-container' : 'bg-error-container text-on-error-container') }}">
-                                        <span class="w-1.5 h-1.5 rounded-full {{ $o['status'] === 'Enviado' ? 'bg-primary' : ($o['status'] === 'Pagado' ? 'bg-tertiary' : 'bg-error') }}"></span>
-                                        {{ $o['status'] }}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold {{ $o->status === 'Enviado' ? 'bg-secondary-container text-on-secondary-container' : ($o->status === 'Pagado' ? 'bg-primary-container text-on-primary-container' : 'bg-error-container text-on-error-container') }}">
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $o->status === 'Enviado' ? 'bg-primary' : ($o->status === 'Pagado' ? 'bg-tertiary' : 'bg-error') }}"></span>
+                                        {{ $o->status }}
                                     </span>
                                 </td>
                                 <td class="py-4 text-right flex justify-end gap-2">
-                                    @if($o['status'] === 'Pendiente')
-                                        <button wire:click="updateOrderStatus('{{ $o['id'] }}', 'Pagado')" class="px-3 py-1 bg-primary text-on-primary rounded-full text-[10px] font-bold hover:shadow transition-all">Marcar Pagado</button>
-                                    @elseif($o['status'] === 'Pagado')
-                                        <button wire:click="updateOrderStatus('{{ $o['id'] }}', 'Enviado')" class="px-3 py-1 bg-primary text-on-primary rounded-full text-[10px] font-bold hover:shadow transition-all">Marcar Enviado</button>
+                                    @if($o->status === 'Pendiente')
+                                        <button wire:click="updateOrderStatus('{{ $o->id }}', 'Pagado')" class="px-3 py-1 bg-primary text-on-primary rounded-full text-[10px] font-bold hover:shadow transition-all">Marcar Pagado</button>
+                                    @elseif($o->status === 'Pagado')
+                                        <button wire:click="updateOrderStatus('{{ $o->id }}', 'Enviado')" class="px-3 py-1 bg-primary text-on-primary rounded-full text-[10px] font-bold hover:shadow transition-all">Marcar Enviado</button>
                                     @else
                                         <span class="text-on-surface-variant font-bold text-[10px]">Listo</span>
                                     @endif

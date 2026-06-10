@@ -1,0 +1,110 @@
+{
+  "similar_to": "Eau Sauvage",
+  "similar_fragrances": [
+    {
+      "_id": "Chirstian-Dior-Eau-Sauvage-Edt",
+      "Name": "Chirstian Dior Eau Sauvage Edt",
+      "Brand": "Dior",
+      "Year": "1966",
+      "rating": "3.95",
+      "Country": "France",
+      "Image URL": "https://cdn.fragella.com/images/chirstian-dior-eau-sauvage-edt.jpg",
+      "Gender": "Men",
+      "Price": "69.00",
+      "Longevity": "Moderate",
+      "Sillage": "Moderate",
+      "General Notes": ["Lemon","Bergamot","Basil","Rosemary","Caraway","Fruity Notes","Jasmine","Coriander","Carnation","Patchouli","Orris Root","Sandalwood","Rose","Lavender","Hedione","Oakmoss","Vetiver","Musk","Amber"],
+      "Main Accords": ["aromatic","citrus","fresh spicy","woody","earthy","mossy","green","floral"],
+      "Main Accords Percentage": {"aromatic":"Dominant","citrus":"Dominant","fresh spicy":"Prominent","woody":"Prominent","earthy":"Moderate","mossy":"Moderate","green":"Moderate","floral":"Moderate"},
+      "Notes": {
+        "Top": [{"name":"Lemon","imageUrl":"https://cdn.fragella.com/note_images/Lemon.png"},{"name":"Bergamot","imageUrl":"https://cdn.fragella.com/note_images/Bergamot.png"},{"name":"Basil","imageUrl":"https://cdn.fragella.com/note_images/Basil.png"},{"name":"Rosemary","imageUrl":"https://cdn.fragella.com/note_images/Rosemary.png"},{"name":"Caraway","imageUrl":"https://cdn.fragella.com/note_images/Caraway.png"},{"name":"Fruity Notes","imageUrl":"https://cdn.fragella.com/note_images/Fruity%20Notes.png"}],
+        "Middle": [{"name":"Jasmine","imageUrl":"https://cdn.fragella.com/note_images/Jasmine.png"},{"name":"Coriander","imageUrl":"https://cdn.fragella.com/note_images/Coriander.png"},{"name":"Carnation","imageUrl":"https://cdn.fragella.com/note_images/Carnation.png"},{"name":"Patchouli","imageUrl":"https://cdn.fragella.com/note_images/Patchouli.png"},{"name":"Orris Root","imageUrl":"https://cdn.fragella.com/note_images/Orris%20Root.png"},{"name":"Sandalwood","imageUrl":"https://cdn.fragella.com/note_images/Sandalwood.png"},{"name":"Rose","imageUrl":"https://cdn.fragella.com/note_images/Rose.png"},{"name":"Lavender","imageUrl":"https://cdn.fragella.com/note_images/Lavender.png"},{"name":"Hedione","imageUrl":"https://cdn.fragella.com/note_images/Hedione.png"}],
+        "Base": [{"name":"Oakmoss","imageUrl":"https://cdn.fragella.com/note_images/Oakmoss.png"},{"name":"Vetiver","imageUrl":"https://cdn.fragella.com/note_images/Vetiver.png"},{"name":"Musk","imageUrl":"https://cdn.fragella.com/note_images/Musk.png"},{"name":"Amber","imageUrl":"https://cdn.fragella.com/note_images/Amber.png"}]
+      }
+    },
+    {
+      "_id": "The-Spirit-Of-Dubai-Dubai-Ajyal-Edp",
+      "Name": "The Spirit Of Dubai Dubai Ajyal Edp",
+      "Brand": "The Spirit Of Dubai",
+      "Year": "2023",
+      "rating": "4.07",
+      "Country": "UAE",
+      "Image URL": "https://cdn.fragella.com/images/the-spirit-of-dubai-dubai-ajyal-edp.jpg",
+      "Gender": "Men",
+      "Price": "145.00",
+      "Longevity": "Very Long Lasting",
+      "Sillage": "Strong",
+      "General Notes": ["Sea Notes","Grapefruit","Rain Notes","Mint","Bergamot","Plum","Pear","Lime","Apple","Lemon","Green Notes","Rhubarb","Black Pepper","Loukhoum","Amberwood","Lavender","Cherry Blossom","Jasmine Sambac","Jasmine","Carnation","Lily of the Valley","Sandalwood","Magnolia","Orchid","Ylang Ylang","Freesia","Mimosa","Heliotrope","Osmanthus","Immortelle","Amber","Brown sugar","White Musk","Vanilla","Musk","Cedarwood","Tonka","Patchouli"],
+      "Main Accords": ["citrus","gourmand","aromatic","sweet","green","fruity","floral","aquatic","fresh spicy","marine","woody"],
+      "Main Accords Percentage": {"citrus":"Dominant","gourmand":"Dominant","aromatic":"Dominant","sweet":"Dominant","green":"Dominant","fruity":"Dominant","floral":"Prominent","aquatic":"Prominent","fresh spicy":"Prominent","marine":"Moderate","woody":"Moderate"},
+      "Notes": {
+        "Top": [{"name":"Sea Notes","imageUrl":"https://cdn.fragella.com/note_images/Sea%20Notes.png"},{"name":"Grapefruit","imageUrl":"https://cdn.fragella.com/note_images/Grapefruit.png"},{"name":"Rain Notes","imageUrl":"https://cdn.fragella.com/note_images/Rain%20Notes.png"},{"name":"Mint","imageUrl":"https://cdn.fragella.com/note_images/Mint.png"}],
+        "Middle": [{"name":"Loukhoum","imageUrl":"https://cdn.fragella.com/note_images/Loukhoum.png"},{"name":"Amberwood","imageUrl":"https://cdn.fragella.com/note_images/Amberwood.png"},{"name":"Lavender","imageUrl":"https://cdn.fragella.com/note_images/Lavender.png"}],
+        "Base": [{"name":"Amber","imageUrl":"https://cdn.fragella.com/note_images/Amber.png"},{"name":"Brown sugar","imageUrl":"https://cdn.fragella.com/note_images/Brown%20Sugar.png"},{"name":"White Musk","imageUrl":"https://cdn.fragella.com/note_images/White%20Musk.png"}]
+      }
+    },
+    {
+      "_id": "Ajmal-Amir-One",
+      "Name": "Ajmal Amir One",
+      "Brand": "Ajmal",
+      "Year": "2021",
+      "rating": "4.12",
+      "Country": "UAE",
+      "Image URL": "https://cdn.fragella.com/images/ajmal-amir-one.jpg",
+      "Gender": "Men",
+      "Price": "139.99",
+      "Longevity": "Long Lasting",
+      "Sillage": "Strong",
+      "General Notes": ["Bergamot","Lemon","Lavender","Clary Sage","Sandalwood","Rose","Jasmine","Lily-of-the-Valley","Patchouli","Agarwood (Oud)","Amber","Musk"],
+      "Main Accords": ["citrus","oud","aromatic","fresh spicy","white floral","woody","powdery","lavender","amber","musky"],
+      "Main Accords Percentage": {"citrus":"Dominant","oud":"Dominant","aromatic":"Dominant","fresh spicy":"Prominent","white floral":"Prominent","woody":"Prominent","powdery":"Moderate","amber":"Moderate","lavender":"Moderate","floral":"Moderate"},
+      "Notes": {
+        "Top": [{"name":"Bergamot","imageUrl":"https://cdn.fragella.com/note_images/Bergamot.png"},{"name":"Lemon","imageUrl":"https://cdn.fragella.com/note_images/Lemon.png"}],
+        "Middle": [{"name":"Sandalwood","imageUrl":"https://cdn.fragella.com/note_images/Sandalwood.png"},{"name":"Rose","imageUrl":"https://cdn.fragella.com/note_images/Rose.png"}],
+        "Base": [{"name":"Agarwood (Oud)","imageUrl":"https://cdn.fragella.com/note_images/Agarwood%20(oud).png"},{"name":"Amber","imageUrl":"https://cdn.fragella.com/note_images/Amber.png"}]
+      }
+    },
+    {
+      "_id": "Roja-Danger-Pour-Homme-Parfum-Cologne",
+      "Name": "Roja Danger Pour Homme Parfum Cologne",
+      "Brand": "Roja Dove",
+      "Year": "2019",
+      "rating": "4.01",
+      "Country": "UK",
+      "Image URL": "https://cdn.fragella.com/images/roja-danger-pour-homme-parfum-cologne.jpg",
+      "Gender": "Men",
+      "Price": "250.00",
+      "Longevity": "Long Lasting",
+      "Sillage": "Moderate",
+      "General Notes": ["Lavender","Lemon","Bergamot","Tarragon","Violet","Jasmine","Lily-of-the-Valley","Cumin","Oakmoss","Vanila","Tonka Bean","Patchouli","Musk","Ambergris","Leather","Clove","Woody Notes","Vetiver","Cedar","Rhubarb","Galbanum"],
+      "Main Accords": ["aromatic","woody","fresh spicy","citrus","gourmand","lavender","vanilla","earthy","powdery","mossy","animalic"],
+      "Main Accords Percentage": {"aromatic":"Dominant","woody":"Dominant","fresh spicy":"Dominant","citrus":"Dominant","gourmand":"Dominant","lavender":"Prominent","vanilla":"Prominent","earthy":"Prominent","powdery":"Moderate","mossy":"Moderate","animalic":"Moderate"},
+      "Notes": {
+        "Top": [{"name":"Lavender","imageUrl":"https://cdn.fragella.com/note_images/Lavender.png"},{"name":"Lemon","imageUrl":"https://cdn.fragella.com/note_images/Lemon.png"}],
+        "Middle": [{"name":"Violet","imageUrl":"https://cdn.fragella.com/note_images/Violet.png"},{"name":"Jasmine","imageUrl":"https://cdn.fragella.com/note_images/Jasmine.png"}],
+        "Base": [{"name":"Cumin","imageUrl":"https://cdn.fragella.com/note_images/Cumin.png"},{"name":"Oakmoss","imageUrl":"https://cdn.fragella.com/note_images/Oakmoss.png"}]
+      }
+    },
+    {
+      "_id": "Creed-Viking-Edp",
+      "Name": "Creed Viking Edp",
+      "Brand": "Creed",
+      "Year": "2017",
+      "rating": "4.08",
+      "Country": "France",
+      "Image URL": "https://cdn.fragella.com/images/creed-viking-edp.jpg",
+      "Gender": "Men",
+      "Price": "235.00",
+      "Longevity": "Long Lasting",
+      "Sillage": "Moderate",
+      "General Notes": ["Pink Pepper","Peppermint","Bergamot","Lemon","Absinthe","Orange","Lavender","Bulgarian Rose","Clove","Allspice","Orris Root","Jasmine","Vetiver","Cedar","White Musk","Tonka Bean"],
+      "Main Accords": ["aromatic","fresh spicy","green","citrus","soft spicy","gourmand","lavender","woody","rose","musky","sweet"],
+      "Main Accords Percentage": {"aromatic":"Dominant","fresh spicy":"Prominent","green":"Prominent","citrus":"Prominent","soft spicy":"Moderate","gourmand":"Moderate","lavender":"Moderate","woody":"Moderate","rose":"Moderate","musky":"Moderate","sweet":"Moderate"},
+      "Notes": {
+        "Top": [{"name":"Pink Pepper","imageUrl":"https://cdn.fragella.com/note_images/Pink%20Pepper.png"},{"name":"Peppermint","imageUrl":"https://cdn.fragella.com/note_images/Peppermint.png"}],
+        "Middle": [{"name":"Lavender","imageUrl":"https://cdn.fragella.com/note_images/Lavender.png"},{"name":"Bulgarian Rose","imageUrl":"https://cdn.fragella.com/note_images/Bulgarian%20Rose.png"}],
+        "Base": [{"name":"Vetiver","imageUrl":"https://cdn.fragella.com/note_images/Vetiver.png"},{"name":"Cedar","imageUrl":"https://cdn.fragella.com/note_images/Cedar.png"}]
+      }
+    }
+  ]
+}

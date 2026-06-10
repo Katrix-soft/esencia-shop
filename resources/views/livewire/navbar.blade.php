@@ -28,9 +28,11 @@
 
         <!-- Trailing Actions -->
         <div class="flex items-center gap-4 text-primary">
-            <button class="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-secondary-container transition-colors active:scale-95 duration-150">
-                <span class="material-symbols-outlined" data-icon="search">search</span>
-            </button>
+            <!-- Barra de Búsqueda Visible -->
+            <div class="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-1.5 border border-outline-variant/30 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all group">
+                <span class="material-symbols-outlined text-on-surface-variant text-[20px] group-focus-within:text-primary transition-colors">search</span>
+                <input wire:model="searchQuery" wire:keydown.enter="performSearch" type="text" placeholder="Buscar..." class="bg-transparent border-none focus:ring-0 text-sm w-32 md:w-40 lg:w-56 transition-all duration-300 text-on-surface placeholder-on-surface-variant/70 px-2 outline-none">
+            </div>
             @auth
                 <!-- Dropdown de Usuario -->
                 <div class="relative" x-data="{ open: false }">

@@ -123,7 +123,7 @@ class PerfilOlfativo extends Component
         $this->loadRecommendations();
         $this->inTest = false;
 
-        session()->flash('profile_success', '¡Tu ADN Olfativo ha sido recalculado con éxito usando nuestra IA!');
+        session()->flash('profile_success', '¡Tu ADN Olfativo ha sido recalculado con éxito!');
     }
 
     public function loadRecommendations()
@@ -200,6 +200,30 @@ class PerfilOlfativo extends Component
                     'img' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDHR4k-t_MrPB6TQIHI1db-MtClWDTQMfVz5cyCi_v-s7iZYu6hALpW-M3wpHRQF6EwpF1bBkHoX-43oL3u6kTIAgbMW0qKLy-mvqdGq2lV7GFz0eYfmEcCZnvc84arhL-XFVrQLfwircc1DVhyQo8cHGVpF9ttbCssndb23TAKwIAmbnn0pqwSuKWELYYEgX7h2-XAdCMiX7TlFfZPn0QG-W1ffW40fT4G3thucdW3WzR0dgU1tmw9i6WtbllUV7c_V3gU7tFLEKM',
                 ],
             ];
+        }
+    }
+
+    public function addToCart($productName)
+    {
+        $product = collect($this->recommendations)->firstWhere('name', $productName);
+        if ($product) {
+            $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance('default');
+            $item = $cart->search(function ($cartItem, $rowId) use ($product) {
+                return $cartItem->name === $product['name'];
+            })->first();
+
+            if ($item) {
+                $cart->update($item->rowId, $item->qty + 1);
+            } else {
+                $cart->add(
+                    uniqid(), // Assuming ID isn't linked to a real product table here
+                    $product['name'],
+                    1,
+                    $product['price'] * 1000,
+                    ['image' => $product['img'], 'type' => $product['type']]
+                );
+            }
+            $this->dispatch('cart-updated');
         }
     }
 

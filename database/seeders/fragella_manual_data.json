@@ -1,0 +1,86 @@
+[
+    {
+        "_id": "Jo-Malone-English-Pear-Freesia-Body-Hand-Wash",
+        "Name": "Jo Malone English Pear Freesia Body Hand Wash",
+        "Brand": "Jo Malone",
+        "Year": "2010",
+        "rating": "3.91",
+        "Country": "UK",
+        "Image URL": "https://cdn.fragella.com/images/jo-malone-english-pear-freesia-body-hand-wash.jpg",
+        "Gender": "Men",
+        "Price": "45.0",
+        "Longevity": "Moderate",
+        "Sillage": "Moderate",
+        "General Notes": ["Pear","Melon","Musk","Patchouli","Rhuburb","Amber","Freesia","Rose"],
+        "Main Accords": ["floral","fruity","sweet","rose","aquatic","musky","fresh","patchouli","green","powdery"],
+        "Main Accords Percentage": {"floral":"Dominant","fruity":"Dominant","sweet":"Prominent","rose":"Prominent","aquatic":"Moderate","musky":"Moderate","fresh":"Moderate","patchouli":"Moderate","green":"Moderate","powdery":"Moderate"},
+        "Notes": {
+            "Top": [{"name":"Pear","imageUrl":"https://cdn.fragella.com/note_images/Pear.png"},{"name":"Melon","imageUrl":"https://cdn.fragella.com/note_images/Melon.png"}],
+            "Middle": [{"name":"Freesia","imageUrl":"https://cdn.fragella.com/note_images/Freesia.png"},{"name":"Rose","imageUrl":"https://cdn.fragella.com/note_images/Rose.png"}],
+            "Base": [{"name":"Musk","imageUrl":"https://cdn.fragella.com/note_images/Musk.png"},{"name":"Patchouli","imageUrl":"https://cdn.fragella.com/note_images/Patchouli.png"},{"name":"Rhuburb","imageUrl":"https://cdn.fragella.com/note_images/Rhuburb.png"},{"name":"Amber","imageUrl":"https://cdn.fragella.com/note_images/Amber.png"}]
+        }
+    },
+    {
+        "_id": "Parfums-De-Marly-Cassili",
+        "Name": "Parfums De Marly Cassili",
+        "Brand": "Parfums De Marly",
+        "Year": "2019",
+        "rating": "4.07",
+        "Country": "France",
+        "Image URL": "https://cdn.fragella.com/images/parfums-de-marly-cassili.jpg",
+        "Gender": "Men",
+        "Price": "245.50",
+        "Longevity": "Moderate",
+        "Sillage": "Moderate",
+        "General Notes": ["Red Currant","Bulgarian Rose","Mimosa","Frangipani","Tonka Bean"],
+        "Main Accords": ["floral","gourmand","fruity","sweet","vanilla","tropical","fresh","rose","powdery","soft spicy","sour"],
+        "Main Accords Percentage": {"floral":"Dominant","gourmand":"Dominant","fruity":"Dominant","sweet":"Prominent","vanilla":"Moderate","tropical":"Moderate","fresh":"Moderate","rose":"Moderate","powdery":"Moderate","soft spicy":"Moderate","sour":"Moderate"},
+        "Notes": {
+            "Top": [{"name":"Red Currant","imageUrl":"https://cdn.fragella.com/note_images/Red%20Currant.png"},{"name":"Floral Notes","imageUrl":"https://cdn.fragella.com/note_images/Floral%20Notes.png"},{"name":"Bulgarian Rose","imageUrl":"https://cdn.fragella.com/note_images/Bulgarian%20Rose.png"}],
+            "Middle": [{"name":"Plum","imageUrl":"https://cdn.fragella.com/note_images/Plum.png"},{"name":"Frangipani","imageUrl":"https://cdn.fragella.com/note_images/Frangipani.png"},{"name":"Petalia","imageUrl":"https://cdn.fragella.com/note_images/Petalia.png"},{"name":"Mimosa","imageUrl":"https://cdn.fragella.com/note_images/Mimosa.png"}],
+            "Base": [{"name":"Vanilla","imageUrl":"https://cdn.fragella.com/note_images/Vanilla.png"},{"name":"Tonka Bean","imageUrl":"https://cdn.fragella.com/note_images/Tonka%20Bean.png"},{"name":"Sandalwood","imageUrl":"https://cdn.fragella.com/note_images/Sandalwood.png"}]
+        }
+    },
+    {
+        "_id": "Kilian-Good-Girl-Gone-Bad",
+        "Name": "Kilian Good Girl Gone Bad",
+        "Brand": "Kilian",
+        "Year": "2012",
+        "rating": "3.95",
+        "Country": "France",
+        "Image URL": "https://cdn.fragella.com/images/kilian-good-girl-gone-bad.jpg",
+        "Gender": "Men",
+        "Price": "260.50",
+        "Longevity": "Long Lasting",
+        "Sillage": "Moderate",
+        "General Notes": ["May Rose","Osmanthus","Indian Tuberose","Narcissus","Amber"],
+        "Main Accords": ["floral","white floral","fruity","tuberose","yellow floral","green","rose","woody","soft spicy","amber"],
+        "Main Accords Percentage": {"floral":"Dominant","white floral":"Dominant","fruity":"Dominant","tuberose":"Prominent","yellow floral":"Moderate","green":"Moderate","rose":"Moderate","woody":"Moderate","soft spicy":"Moderate","amber":"Moderate"},
+        "Notes": {
+            "Top": [{"name":"Osmanthus","imageUrl":"https://cdn.fragella.com/note_images/Osmanthus.png"},{"name":"Peach","imageUrl":"https://cdn.fragella.com/note_images/Peach.png"},{"name":"Neroli","imageUrl":"https://cdn.fragella.com/note_images/Neroli.png"},{"name":"Bergamot","imageUrl":"https://cdn.fragella.com/note_images/Bergamot.png"},{"name":"Mandarin","imageUrl":"https://cdn.fragella.com/note_images/Mandarin.png"},{"name":"Cinnamon","imageUrl":"https://cdn.fragella.com/note_images/Cinnamon.png"}],
+            "Middle": [{"name":"Indian Tuberose","imageUrl":"https://cdn.fragella.com/note_images/Indian%20Tuberose.png"},{"name":"Jasmine","imageUrl":"https://cdn.fragella.com/note_images/Jasmine.png"},{"name":"Narcissus","imageUrl":"https://cdn.fragella.com/note_images/Narcissus.png"},{"name":"May Rose","imageUrl":"https://cdn.fragella.com/note_images/May%20Rose.png"}],
+            "Base": [{"name":"Amber","imageUrl":"https://cdn.fragella.com/note_images/Amber.png"},{"name":"Cedar","imageUrl":"https://cdn.fragella.com/note_images/Cedar.png"},{"name":"Vetiver","imageUrl":"https://cdn.fragella.com/note_images/Vetiver.png"},{"name":"Sandalwood","imageUrl":"https://cdn.fragella.com/note_images/Sandalwood.png"},{"name":"Patchouli","imageUrl":"https://cdn.fragella.com/note_images/Patchouli.png"}]
+        }
+    },
+    {
+        "_id": "Memo-Paris-Les-Echappees-Inle",
+        "Name": "Memo Paris Les Echappees Inle",
+        "Brand": "Memo Paris",
+        "Year": "2007",
+        "rating": "3.84",
+        "Country": "France",
+        "Image URL": "https://cdn.fragella.com/images/memo-paris-les-echappees-inle.jpg",
+        "Gender": "Men",
+        "Price": "315.00",
+        "Longevity": "Moderate",
+        "Sillage": "Moderate",
+        "General Notes": ["Bergamot","Mint","Artemisia","Osmanthus","Mate","Jasmine","Spices","Iris","Musk","Cedar"],
+        "Main Accords": ["floral","aromatic","fruity","fresh spicy","white floral","green","citrus","powdery","fresh","iris"],
+        "Main Accords Percentage": {"floral":"Dominant","aromatic":"Dominant","fruity":"Dominant","fresh spicy":"Prominent","white floral":"Prominent","green":"Moderate","citrus":"Moderate","powdery":"Moderate","fresh":"Moderate","iris":"Moderate"},
+        "Notes": {
+            "Top": [{"name":"Bergamot","imageUrl":"https://cdn.fragella.com/note_images/Bergamot.png"},{"name":"Mint","imageUrl":"https://cdn.fragella.com/note_images/Mint.png"},{"name":"Artemisia","imageUrl":"https://cdn.fragella.com/note_images/Artemisia.png"}],
+            "Middle": [{"name":"Osmanthus","imageUrl":"https://cdn.fragella.com/note_images/Osmanthus.png"},{"name":"Mate","imageUrl":"https://cdn.fragella.com/note_images/Mate.png"},{"name":"Jasmine","imageUrl":"https://cdn.fragella.com/note_images/Jasmine.png"},{"name":"Spices","imageUrl":"https://cdn.fragella.com/note_images/Spices.png"}],
+            "Base": [{"name":"Iris","imageUrl":"https://cdn.fragella.com/note_images/Iris.png"},{"name":"Musk","imageUrl":"https://cdn.fragella.com/note_images/Musk.png"},{"name":"Cedar","imageUrl":"https://cdn.fragella.com/note_images/Cedar.png"}]
+        }
+    }
+]

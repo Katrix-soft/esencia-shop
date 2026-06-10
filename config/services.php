@@ -41,4 +41,9 @@ return [
         'webhook_secret' => env('MERCADOPAGO_WEBHOOK_SECRET'),
     ],
 
+    'fragella' => [
+        'api_key' => env('FRAGELLA_API_KEY'),
+        'public_key' => env('FRAGELLA_PUBLIC_KEY'),
+    ],
+
 ];

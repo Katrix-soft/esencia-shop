@@ -29,5 +29,20 @@
     <livewire:footer />
 
     @livewireScripts
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.fragella.com/enrich.js" data-client-id="{{ config('services.fragella.public_key') }}"></script>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('swal', (event) => {
+                const data = event[0];
+                Swal.fire({
+                    icon: data.icon,
+                    title: data.title,
+                    text: data.text,
+                    confirmButtonColor: '#2f5a43' // Primary green of Esencia
+                });
+            });
+        });
+    </script>
 </body>
 </html>

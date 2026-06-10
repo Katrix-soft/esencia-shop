@@ -15,30 +15,46 @@ class ProductCard extends Component
 
     public function addToCart()
     {
-        $cart = session()->get('cart', []);
-        
-        $found = false;
-        foreach ($cart as &$item) {
-            if ($item['id'] === $this->product['id']) {
-                $item['quantity']++;
-                $found = true;
-                break;
+        $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance('default');
+        $item = $cart->search(function ($cartItem, $rowId) {
+            return $cartItem->id === $this->product->id;
+        })->first();
+
+        $stock = $this->product ? (int) $this->product->stock : 0;
+
+        if ($item) {
+            if ($item->qty >= $stock) {
+                $this->dispatch('swal', [
+                    'icon' => 'error',
+                    'title' => 'Sin stock',
+                    'text' => "Solo tenemos {$stock} unidades disponibles de {$this->product->name}."
+                ]);
+                return;
             }
+            $cart->update($item->rowId, $item->qty + 1);
+        } else {
+            if ($stock < 1) {
+                $this->dispatch('swal', [
+                    'icon' => 'error',
+                    'title' => 'Agotado',
+                    'text' => "{$this->product->name} está agotado."
+                ]);
+                return;
+            }
+            $cart->add(
+                $this->product->id,
+                $this->product->name,
+                1,
+                $this->product->price,
+                ['image' => $this->product->image]
+            );
         }
         
-        if (!$found) {
-            $cart[] = [
-                'id' => $this->product['id'],
-                'name' => $this->product['name'],
-                'type' => $this->product['family'],
-                'size' => 'Decant 10ml',
-                'price' => $this->product['price'] * 1000, // multiply to have realistic ARS prices matching layout
-                'quantity' => 1,
-                'img' => $this->product['image'],
-            ];
-        }
-        
-        session()->put('cart', $cart);
+        $this->dispatch('swal', [
+            'icon' => 'success',
+            'title' => 'Agregado',
+            'text' => "{$this->product->name} añadido al carrito."
+        ]);
         $this->dispatch('cart-updated');
     }
 

@@ -11,15 +11,14 @@
                 </h2>
                 
                 <div class="mb-8">
-                    <h3 class="text-sm font-bold text-on-surface-variant mb-4 uppercase tracking-wider">Familia Olfativa</h3>
-                    <div class="flex flex-col gap-3">
-                        @php
-                            $families = ['Amaderado', 'Floral Blanco', 'Cítrico Terroso', 'Oriental Especiado'];
-                        @endphp
-                        @foreach($families as $family)
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" wire:model.live="selectedFamilies" value="{{ $family }}" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-surface-container-lowest bg-surface transition-all" />
-                            <span class="text-on-background group-hover:text-primary transition-colors">{{ $family }}</span>
+                    <h3 class="text-sm font-bold text-on-surface-variant mb-4 uppercase tracking-wider">Notas Principales</h3>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($this->popularNotes as $note)
+                        <label class="cursor-pointer">
+                            <input type="checkbox" wire:model.live="selectedNotes" value="{{ $note }}" class="peer sr-only" />
+                            <span class="inline-block px-3 py-1.5 text-sm rounded-full border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary peer-checked:bg-primary peer-checked:text-on-primary peer-checked:border-primary transition-colors shadow-sm">
+                                {{ $note }}
+                            </span>
                         </label>
                         @endforeach
                     </div>
