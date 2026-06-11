@@ -95,11 +95,18 @@
                 Plan Extracto
             </button>
             
-            <!-- Deshabilitar Documentación IA -->
+            <!-- Toggle Documentación IA -->
+            @if($iaDocumentationEnabled)
             <button wire:click="actionClicked('Deshabilitar IA')" class="flex items-center gap-2 px-5 py-2.5 rounded text-sm font-bold bg-[#e3f2fd] text-[#1976d2] border border-[#bbdefb] hover:bg-[#bbdefb]/50 transition-colors">
                 <span class="material-symbols-outlined text-[18px]">auto_fix_off</span>
                 Deshabilitar Documentación IA
             </button>
+            @else
+            <button wire:click="actionClicked('Habilitar IA')" class="flex items-center gap-2 px-5 py-2.5 rounded text-sm font-bold bg-[#e3f2fd] text-[#1976d2] border border-[#bbdefb] hover:bg-[#bbdefb]/50 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
+                Habilitar Documentación IA
+            </button>
+            @endif
             
             <!-- Deshabilitar Chatbot -->
             <button wire:click="actionClicked('Deshabilitar Chatbot')" class="flex items-center gap-2 px-5 py-2.5 rounded text-sm font-bold bg-[#e8f5e9] text-[#388e3c] border border-[#c8e6c9] hover:bg-[#c8e6c9]/50 transition-colors">
@@ -124,7 +131,53 @@
                     <h2 class="text-lg font-bold text-gray-900 leading-none">Métricas del dashboard</h2>
                     <p class="text-xs text-gray-500 mt-1">Control por tenant</p>
                 </div>
+                <div class="ml-auto flex items-center gap-2">
+                    <button wire:click="$toggle('showMetricsPreview')" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">dashboard</span>
+                        Métricas
+                    </button>
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-indigo-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">speed</span>
+                        Dashboard
+                    </a>
+                </div>
             </div>
+
+            @if($showMetricsPreview)
+            <!-- Preview Dashboard Modal/Section -->
+            <div class="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-xl animate-fade-in relative">
+                <!-- Close Button -->
+                <button wire:click="$set('showMetricsPreview', false)" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                
+                <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">Vista Previa de Métricas</h3>
+
+                <div class="mb-6 p-6 bg-indigo-600 text-white rounded-xl flex items-center justify-between shadow-md">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white text-indigo-600 rounded flex items-center justify-center font-bold text-lg">KA</div>
+                        <div>
+                            <h2 class="text-xl font-bold">¡Hola de nuevo, Katrix Super Admin!</h2>
+                            <p class="text-sm text-indigo-100">Este es el resumen de operaciones y métricas de tu tienda.</p>
+                        </div>
+                    </div>
+                    <div class="bg-indigo-500/50 px-4 py-2 rounded flex items-center gap-2 text-sm font-bold border border-indigo-400">
+                        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                        Panel de Control Activo
+                    </div>
+                </div>
+
+                @include('livewire.metrics-dashboard')
+            </div>
+            @endif
+
+            @php
+                $ventasActivas = (!empty($enabledMetrics['Ingresos totales']) ? 1 : 0) + (!empty($enabledMetrics['Ticket promedio']) ? 1 : 0) + (!empty($enabledMetrics['Ventas vs mes anterior']) ? 1 : 0) + (!empty($enabledMetrics['Gráfico de ventas']) ? 1 : 0);
+                $ordenesActivas = (!empty($enabledMetrics['Órdenes del día']) ? 1 : 0) + (!empty($enabledMetrics['Órdenes pendientes']) ? 1 : 0) + (!empty($enabledMetrics['Órdenes canceladas']) ? 1 : 0);
+                $logisticaActivas = (!empty($enabledMetrics['Envíos activos']) ? 1 : 0);
+                $productosActivas = (!empty($enabledMetrics['Más vendidos']) ? 1 : 0) + (!empty($enabledMetrics['Stock bajo']) ? 1 : 0) + (!empty($enabledMetrics['Más visitados']) ? 1 : 0);
+                $usuariosActivas = (!empty($enabledMetrics['Nuevos registros']) ? 1 : 0) + (!empty($enabledMetrics['Clientes recurrentes']) ? 1 : 0);
+            @endphp
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 <!-- Ventas -->
@@ -133,9 +186,9 @@
                         <span class="material-symbols-outlined">trending_up</span>
                     </div>
                     <h3 class="text-xs font-bold text-gray-800 tracking-wider mb-2">VENTAS</h3>
-                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">4 / 4 activas</span>
-                    <button class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
-                        todo <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">{{ $ventasActivas }} / 4 activas</span>
+                    <button wire:click="toggleMetric('ventas')" class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">{{ $expandedMetric === 'ventas' ? 'expand_less' : 'expand_more' }}</span>
                     </button>
                 </div>
                 
@@ -145,9 +198,9 @@
                         <span class="material-symbols-outlined">shopping_cart</span>
                     </div>
                     <h3 class="text-xs font-bold text-gray-800 tracking-wider mb-2">ÓRDENES</h3>
-                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">3 / 3 activas</span>
-                    <button class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
-                        todo <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">{{ $ordenesActivas }} / 3 activas</span>
+                    <button wire:click="toggleMetric('ordenes')" class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">{{ $expandedMetric === 'ordenes' ? 'expand_less' : 'expand_more' }}</span>
                     </button>
                 </div>
 
@@ -157,9 +210,9 @@
                         <span class="material-symbols-outlined">local_shipping</span>
                     </div>
                     <h3 class="text-xs font-bold text-gray-800 tracking-wider mb-2">LOGÍSTICA</h3>
-                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">3 / 3 activas</span>
-                    <button class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
-                        todo <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">{{ $logisticaActivas }} / 1 activas</span>
+                    <button wire:click="toggleMetric('logistica')" class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">{{ $expandedMetric === 'logistica' ? 'expand_less' : 'expand_more' }}</span>
                     </button>
                 </div>
 
@@ -169,9 +222,9 @@
                         <span class="material-symbols-outlined">inventory_2</span>
                     </div>
                     <h3 class="text-xs font-bold text-gray-800 tracking-wider mb-2">PRODUCTOS</h3>
-                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">3 / 3 activas</span>
-                    <button class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
-                        todo <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">{{ $productosActivas }} / 3 activas</span>
+                    <button wire:click="toggleMetric('productos')" class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">{{ $expandedMetric === 'productos' ? 'expand_less' : 'expand_more' }}</span>
                     </button>
                 </div>
 
@@ -181,12 +234,240 @@
                         <span class="material-symbols-outlined">group</span>
                     </div>
                     <h3 class="text-xs font-bold text-gray-800 tracking-wider mb-2">USUARIOS</h3>
-                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">2 / 2 activas</span>
-                    <button class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
-                        todo <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">{{ $usuariosActivas }} / 2 activas</span>
+                    <button wire:click="toggleMetric('usuarios')" class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">{{ $expandedMetric === 'usuarios' ? 'expand_less' : 'expand_more' }}</span>
                     </button>
                 </div>
             </div>
+
+            @if($expandedMetric === 'ordenes')
+            <div class="mt-6 border border-indigo-200 rounded bg-white shadow-sm animate-fade-in">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-4 border-b border-indigo-50 bg-indigo-50/30">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-indigo-600">shopping_cart</span>
+                        <h3 class="text-sm font-bold text-gray-800 tracking-wider">ÓRDENES</h3>
+                        <span class="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded">{{ $ordenesActivas }} / 3 activas</span>
+                    </div>
+                    <button wire:click="toggleMetric('ordenes')" class="flex items-center justify-center gap-1 bg-indigo-100 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-200 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">expand_less</span>
+                    </button>
+                </div>
+                <!-- List -->
+                <div class="divide-y divide-gray-50">
+                    <!-- Item 1 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <!-- Toggle switch ON -->
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Órdenes del día']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Órdenes del día')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Órdenes del día']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Órdenes del día</span>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <!-- Toggle switch ON -->
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Órdenes pendientes']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Órdenes pendientes')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Órdenes pendientes']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">schedule</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Órdenes pendientes</span>
+                    </div>
+                    <!-- Item 3 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <!-- Toggle switch ON -->
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Órdenes canceladas']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Órdenes canceladas')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Órdenes canceladas']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">cancel</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Órdenes canceladas</span>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if($expandedMetric === 'ventas')
+            <div class="mt-6 border border-indigo-200 rounded bg-white shadow-sm animate-fade-in">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-4 border-b border-indigo-50 bg-indigo-50/30">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-indigo-600">trending_up</span>
+                        <h3 class="text-sm font-bold text-gray-800 tracking-wider">VENTAS</h3>
+                        <span class="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded">{{ $ventasActivas }} / 4 activas</span>
+                    </div>
+                    <button wire:click="toggleMetric('ventas')" class="flex items-center justify-center gap-1 bg-indigo-100 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-200 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">expand_less</span>
+                    </button>
+                </div>
+                <!-- List -->
+                <div class="divide-y divide-gray-50">
+                    <!-- Item 1 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Ingresos totales']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Ingresos totales')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Ingresos totales']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">attach_money</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Ingresos totales</span>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Ticket promedio']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Ticket promedio')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Ticket promedio']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Ticket promedio</span>
+                    </div>
+                    <!-- Item 3 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Ventas vs mes anterior']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Ventas vs mes anterior')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Ventas vs mes anterior']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">trending_up</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Ventas vs mes anterior</span>
+                    </div>
+                    <!-- Item 4 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Gráfico de ventas']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Gráfico de ventas')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Gráfico de ventas']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">show_chart</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Gráfico de ventas</span>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if($expandedMetric === 'logistica')
+            <div class="mt-6 border border-indigo-200 rounded bg-white shadow-sm animate-fade-in">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-4 border-b border-indigo-50 bg-indigo-50/30">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-indigo-600">local_shipping</span>
+                        <h3 class="text-sm font-bold text-gray-800 tracking-wider">LOGÍSTICA</h3>
+                        <span class="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded">{{ $logisticaActivas }} / 1 activas</span>
+                    </div>
+                    <button wire:click="toggleMetric('logistica')" class="flex items-center justify-center gap-1 bg-indigo-100 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-200 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">expand_less</span>
+                    </button>
+                </div>
+                <!-- List -->
+                <div class="divide-y divide-gray-50">
+                    <!-- Item 1 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Envíos activos']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Envíos activos')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Envíos activos']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">local_shipping</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Envíos activos</span>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if($expandedMetric === 'productos')
+            <div class="mt-6 border border-indigo-200 rounded bg-white shadow-sm animate-fade-in">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-4 border-b border-indigo-50 bg-indigo-50/30">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-indigo-600">inventory_2</span>
+                        <h3 class="text-sm font-bold text-gray-800 tracking-wider">PRODUCTOS</h3>
+                        <span class="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded">{{ $productosActivas }} / 3 activas</span>
+                    </div>
+                    <button wire:click="toggleMetric('productos')" class="flex items-center justify-center gap-1 bg-indigo-100 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-200 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">expand_less</span>
+                    </button>
+                </div>
+                <!-- List -->
+                <div class="divide-y divide-gray-50">
+                    <!-- Item 1 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Más vendidos']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Más vendidos')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Más vendidos']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">stars</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Más vendidos</span>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Stock bajo']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Stock bajo')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Stock bajo']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">warning</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Stock bajo</span>
+                    </div>
+                    <!-- Item 3 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Más visitados']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Más visitados')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Más visitados']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">visibility</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Más visitados</span>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if($expandedMetric === 'usuarios')
+            <div class="mt-6 border border-indigo-200 rounded bg-white shadow-sm animate-fade-in">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-4 border-b border-indigo-50 bg-indigo-50/30">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-indigo-600">group</span>
+                        <h3 class="text-sm font-bold text-gray-800 tracking-wider">USUARIOS</h3>
+                        <span class="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded">{{ $usuariosActivas }} / 2 activas</span>
+                    </div>
+                    <button wire:click="toggleMetric('usuarios')" class="flex items-center justify-center gap-1 bg-indigo-100 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-200 transition-colors uppercase tracking-wider">
+                        todo <span class="material-symbols-outlined text-[14px]">expand_less</span>
+                    </button>
+                </div>
+                <!-- List -->
+                <div class="divide-y divide-gray-50">
+                    <!-- Item 1 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Nuevos registros']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Nuevos registros')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Nuevos registros']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">group_add</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Nuevos registros</span>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Clientes recurrentes']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Clientes recurrentes')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Clientes recurrentes']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">sync</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Clientes recurrentes</span>
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
     @elseif($activeTab === 'tienda')
         <div class="animate-fade-in">
@@ -481,7 +762,19 @@
                     <h3 class="flex items-center gap-2 text-gray-600 font-bold text-[11px] uppercase tracking-wide mb-4">
                         <span class="material-symbols-outlined text-[16px]">credit_card</span> Detalles de Facturación y Suscripción
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-500 tracking-wide mb-2 uppercase">Plan de Suscripción</label>
+                            <div class="relative">
+                                <select wire:model.live="planId" class="w-full appearance-none border border-gray-200 rounded px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 bg-white">
+                                    <option value="">Personalizado</option>
+                                    @foreach(config('plans', []) as $p)
+                                        <option value="{{ $p['id'] }}">{{ $p['name'] }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="material-symbols-outlined absolute right-3 top-2.5 text-gray-400 text-sm pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
                         <div>
                             <label class="block text-[11px] font-bold text-gray-500 tracking-wide mb-2 uppercase">Precio del Plan</label>
                             <div class="relative">
@@ -620,5 +913,88 @@
                 </form>
             </div>
         </div>
+    @endif
+
+    <!-- Modal Plan Semilla -->
+    @if($showSemillaPlanModal)
+    <div class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm animate-fade-in p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 text-center relative">
+            <div class="w-20 h-20 mx-auto rounded-full border-[3px] border-[#00b0ff] flex items-center justify-center mb-6 bg-[#00b0ff]/5">
+                <span class="text-[#00b0ff] text-[40px] font-bold font-serif italic">i</span>
+            </div>
+            
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Aplicar Plan Semilla?</h2>
+            
+            <p class="text-[13px] text-gray-600 mb-8 leading-relaxed px-4">
+                Esto habilitará únicamente los módulos y métricas<br>
+                esenciales del sistema (Catálogo, Órdenes, Portadas,<br>
+                Opciones y KPIs básicos).
+            </p>
+            
+            <div class="flex items-center justify-center gap-3">
+                <button wire:click="applySemillaPlan" class="px-6 py-2.5 bg-[#f59e0b] hover:bg-[#d97706] text-white font-bold text-sm rounded transition-colors shadow-sm">
+                    Sí, aplicar Plan Semilla
+                </button>
+                <button wire:click="$set('showSemillaPlanModal', false)" class="px-6 py-2.5 bg-[#636e72] hover:bg-[#2d3436] text-white font-bold text-sm rounded transition-colors shadow-sm">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Modal Plan Básico (Flor) -->
+    @if($showBasicPlanModal)
+    <div class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm animate-fade-in p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 text-center relative">
+            <div class="w-20 h-20 mx-auto rounded-full border-[3px] border-[#00b0ff] flex items-center justify-center mb-6 bg-[#00b0ff]/5">
+                <span class="text-[#00b0ff] text-[40px] font-bold font-serif italic">i</span>
+            </div>
+            
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Aplicar Plan Básico?</h2>
+            
+            <p class="text-[13px] text-gray-600 mb-8 leading-relaxed px-4">
+                Esto habilitará únicamente los módulos y métricas<br>
+                esenciales del sistema (Catálogo, Órdenes, Portadas,<br>
+                Opciones y KPIs básicos).
+            </p>
+            
+            <div class="flex items-center justify-center gap-3">
+                <button wire:click="applyBasicPlan" class="px-6 py-2.5 bg-[#e67e22] hover:bg-[#d35400] text-white font-bold text-sm rounded transition-colors shadow-sm">
+                    Sí, aplicar Plan Básico
+                </button>
+                <button wire:click="$set('showBasicPlanModal', false)" class="px-6 py-2.5 bg-[#636e72] hover:bg-[#2d3436] text-white font-bold text-sm rounded transition-colors shadow-sm">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Modal Plan Premium (Extracto) -->
+    @if($showPremiumPlanModal)
+    <div class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm animate-fade-in p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 text-center relative">
+            <div class="w-20 h-20 mx-auto rounded-full border-[3px] border-[#2ecc71] flex items-center justify-center mb-6 bg-[#2ecc71]/5">
+                <span class="material-symbols-outlined text-[#2ecc71] text-[40px] font-bold">check</span>
+            </div>
+            
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Aplicar Plan Premium?</h2>
+            
+            <p class="text-[13px] text-gray-600 mb-8 leading-relaxed px-4">
+                Esto habilitará absolutamente todos los módulos y<br>
+                métricas del sistema.
+            </p>
+            
+            <div class="flex items-center justify-center gap-3">
+                <button wire:click="applyPremiumPlan" class="px-6 py-2.5 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-bold text-sm rounded transition-colors shadow-sm">
+                    Sí, aplicar Plan Premium
+                </button>
+                <button wire:click="$set('showPremiumPlanModal', false)" class="px-6 py-2.5 bg-[#636e72] hover:bg-[#2d3436] text-white font-bold text-sm rounded transition-colors shadow-sm">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
     @endif
 </div>

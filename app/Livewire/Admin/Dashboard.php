@@ -17,6 +17,8 @@ class Dashboard extends Component
     public $searchCustomer = '';
     public $searchProduct = '';
     public $filterOrderStatus = 'all';
+    public $iaDocumentationEnabled = true;
+    public $enabledMetrics = [];
 
     // Estado del Formulario de Creación de Producto
     public $newName = '';
@@ -42,6 +44,24 @@ class Dashboard extends Component
         if (!auth()->check() || !auth()->user()->hasRole(['admin', 'superadmin'])) {
             return redirect()->route('login');
         }
+
+        $this->iaDocumentationEnabled = cache('feature_ia_documentation_enabled', true);
+        
+        $this->enabledMetrics = cache()->get('metrics_config_global', [
+            'Ingresos totales' => true,
+            'Ticket promedio' => true,
+            'Ventas vs mes anterior' => true,
+            'Órdenes del día' => true,
+            'Órdenes pendientes' => true,
+            'Órdenes canceladas' => true,
+            'Envíos activos' => true,
+            'Nuevos registros' => true,
+            'Clientes recurrentes' => true,
+            'Gráfico de ventas' => true,
+            'Más vendidos' => true,
+            'Stock bajo' => true,
+            'Más visitados' => true,
+        ]);
     }
 
     public function switchTab($tab)

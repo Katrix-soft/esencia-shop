@@ -23,6 +23,10 @@ Route::get('/admin/dashboard', AdminDashboard::class)->name('admin.dashboard');
 Route::get('/super-admin/dashboard', SuperAdminDashboard::class)->name('superadmin.dashboard');
 Route::get('/mi-cuenta', ClientPortal::class)->name('client.portal');
 
+
 Route::post('/mercadopago/webhook', [MercadoPagoWebhookController::class, 'handle'])->name('mercadopago.webhook');
 
+Route::get('/plans', function () {
+    return response()->json(config('plans', []));
+});
 

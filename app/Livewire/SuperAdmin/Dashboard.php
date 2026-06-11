@@ -14,7 +14,14 @@ class Dashboard extends Component
     use WithFileUploads;
 
     public $activeTab = 'modulos';
+    public $expandedMetric = null;
     public $selectedTenant = '';
+    public $enabledMetrics = [];
+    public $showMetricsPreview = false;
+    public $showSemillaPlanModal = false;
+    public $showBasicPlanModal = false;
+    public $showPremiumPlanModal = false;
+    public $iaDocumentationEnabled = true;
 
     // Users Tab Properties
     public $searchUser = '';
@@ -43,6 +50,7 @@ class Dashboard extends Component
     public $limitProducts = 100;
     public $limitUsers = 10;
     public $limitOrders = 500;
+    public $planId = '';
     public $planPrice = 0;
     public $planDueDate = '';
     public $planBillingCycle = 'mensual';
@@ -53,6 +61,24 @@ class Dashboard extends Component
         if (!auth()->check() || !auth()->user()->hasRole('superadmin')) {
             abort(403, 'Acceso denegado. Se requiere rol de Super Admin.');
         }
+
+        $this->enabledMetrics = cache()->get('metrics_config_global', [
+            'Ingresos totales' => true,
+            'Ticket promedio' => true,
+            'Ventas vs mes anterior' => true,
+            'Órdenes del día' => true,
+            'Órdenes pendientes' => true,
+            'Órdenes canceladas' => true,
+            'Envíos activos' => true,
+            'Nuevos registros' => true,
+            'Clientes recurrentes' => true,
+            'Gráfico de ventas' => true,
+            'Más vendidos' => true,
+            'Stock bajo' => true,
+            'Más visitados' => true,
+        ]);
+
+        $this->iaDocumentationEnabled = cache('feature_ia_documentation_enabled', true);
 
         // Cargar configuración de la tienda
         $this->storeName = cache('store_name', 'Esencia');
@@ -66,6 +92,7 @@ class Dashboard extends Component
         $this->limitProducts = cache('limit_products', 100);
         $this->limitUsers = cache('limit_users', 10);
         $this->limitOrders = cache('limit_orders', 500);
+        $this->planId = cache('plan_id', '');
         $this->planPrice = cache('plan_price', 0);
         $this->planDueDate = cache('plan_due_date', '');
         $this->planBillingCycle = cache('plan_billing_cycle', 'mensual');
@@ -76,6 +103,22 @@ class Dashboard extends Component
         // Obtener todos los usuarios, idealmente filtraríamos por rol admin o tenant
         // Pero para asegurar que no esté vacío en esta demo, traemos todos
         return User::all();
+    }
+
+    public function updatedPlanId($value)
+    {
+        if (!$value) {
+            $this->planPrice = 0;
+            return;
+        }
+
+        $plans = config('plans', []);
+        foreach ($plans as $p) {
+            if ($p['id'] === $value) {
+                $this->planPrice = $p['price'];
+                break;
+            }
+        }
     }
 
     public function getUsersProperty()
@@ -101,9 +144,123 @@ class Dashboard extends Component
         $this->activeTab = $tab;
     }
 
+    public function toggleMetric($metric)
+    {
+        if ($this->expandedMetric === $metric) {
+            $this->expandedMetric = null;
+        } else {
+            $this->expandedMetric = $metric;
+        }
+    }
+
+    public function toggleMetricVisibility($metricName)
+    {
+        if (isset($this->enabledMetrics[$metricName])) {
+            $this->enabledMetrics[$metricName] = !$this->enabledMetrics[$metricName];
+        } else {
+            $this->enabledMetrics[$metricName] = true;
+        }
+        
+        cache()->put('metrics_config_global', $this->enabledMetrics);
+        
+        session()->flash('message', "Métrica '$metricName' actualizada.");
+    }
+
     public function actionClicked($action)
     {
-        session()->flash('message', "Acción ejecutada: $action");
+        if ($action === 'Plan Semilla') {
+            $this->showSemillaPlanModal = true;
+        } elseif ($action === 'Plan Flor') {
+            $this->showBasicPlanModal = true;
+        } elseif ($action === 'Plan Extracto') {
+            $this->showPremiumPlanModal = true;
+        } elseif ($action === 'Deshabilitar IA' || $action === 'Habilitar IA') {
+            $this->iaDocumentationEnabled = !$this->iaDocumentationEnabled;
+            cache(['feature_ia_documentation_enabled' => $this->iaDocumentationEnabled]);
+            $estado = $this->iaDocumentationEnabled ? 'habilitada' : 'deshabilitada';
+            session()->flash('message', "Documentación IA $estado.");
+            $this->logActivity('FEATURE TOGGLE', "Documentación IA $estado para el tenant.");
+        } else {
+            session()->flash('message', "Acción '$action' ejecutada.");
+        }
+    }
+
+    public function applySemillaPlan()
+    {
+        $semillaMetrics = [
+            'Ingresos totales' => true,
+            'Ticket promedio' => false,
+            'Órdenes del día' => true,
+            'Órdenes pendientes' => false,
+            'Órdenes canceladas' => true,
+            'Envíos activos' => false,
+            'Ventas vs mes anterior' => false,
+            'Gráfico de ventas' => false,
+            'Más vendidos' => false,
+            'Stock bajo' => false,
+            'Más visitados' => false,
+            'Nuevos registros' => false,
+            'Clientes recurrentes' => false,
+        ];
+
+        $this->enabledMetrics = $semillaMetrics;
+        cache()->put('metrics_config_global', $this->enabledMetrics);
+        
+        $this->showSemillaPlanModal = false;
+        session()->flash('message', 'Plan Semilla aplicado. Solo se han habilitado las funciones solicitadas.');
+        $this->logActivity('PLAN APPLY', 'Plan Semilla aplicado al tenant.');
+    }
+
+    public function applyBasicPlan()
+    {
+        $basicMetrics = [
+            'Ingresos totales' => true,
+            'Ticket promedio' => true,
+            'Órdenes del día' => true,
+            'Órdenes pendientes' => true,
+            'Órdenes canceladas' => true,
+            'Envíos activos' => true,
+            'Ventas vs mes anterior' => false,
+            'Gráfico de ventas' => false,
+            'Más vendidos' => false,
+            'Stock bajo' => false,
+            'Más visitados' => false,
+            'Nuevos registros' => false,
+            'Clientes recurrentes' => false,
+        ];
+
+        $this->enabledMetrics = $basicMetrics;
+        cache()->put('metrics_config_global', $this->enabledMetrics);
+        
+        $this->showBasicPlanModal = false;
+        session()->flash('message', 'Plan Básico aplicado. Solo se han habilitado las funciones esenciales.');
+        $this->logActivity('PLAN APPLY', 'Plan Básico (Flor) aplicado al tenant.');
+    }
+
+    public function applyPremiumPlan()
+    {
+        $premiumMetrics = [
+            'Ingresos totales' => true,
+            'Ticket promedio' => true,
+            'Órdenes del día' => true,
+            'Órdenes pendientes' => true,
+            'Órdenes canceladas' => true,
+            'Envíos activos' => true,
+            'Ventas vs mes anterior' => true,
+            'Gráfico de ventas' => true,
+            'Más vendidos' => true,
+            'Stock bajo' => true,
+            'Más visitados' => true,
+            'Nuevos registros' => true,
+            'Clientes recurrentes' => true,
+        ];
+
+        $this->enabledMetrics = $premiumMetrics;
+        cache()->put('metrics_config_global', $this->enabledMetrics);
+        
+        $this->showPremiumPlanModal = false;
+        session()->flash('message', 'Plan Premium aplicado. Se han habilitado todos los módulos y métricas.');
+        $this->logActivity('PLAN APPLY', 'Plan Premium (Extracto) aplicado al tenant.');
     }
 
     // --- User CRUD Methods ---
@@ -234,6 +391,7 @@ class Dashboard extends Component
         cache(['limit_products' => $this->limitProducts]);
         cache(['limit_users' => $this->limitUsers]);
         cache(['limit_orders' => $this->limitOrders]);
+        cache(['plan_id' => $this->planId]);
         cache(['plan_price' => $this->planPrice]);
         cache(['plan_due_date' => $this->planDueDate]);
         cache(['plan_billing_cycle' => $this->planBillingCycle]);

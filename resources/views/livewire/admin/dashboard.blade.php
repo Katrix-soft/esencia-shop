@@ -13,6 +13,10 @@
                 <span class="material-symbols-outlined text-[18px]">group</span>
                 CRM & Insights
             </button>
+            <button wire:click="switchTab('ventas')" class="px-5 py-2.5 rounded-lg text-sm font-bold transition-all font-body flex items-center gap-2 {{ $activeTab === 'ventas' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-primary' }}">
+                <span class="material-symbols-outlined text-[18px]">monitoring</span>
+                Panel de Ventas
+            </button>
             <button wire:click="switchTab('products')" class="px-5 py-2.5 rounded-lg text-sm font-bold transition-all font-body flex items-center gap-2 {{ $activeTab === 'products' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-primary' }}">
                 <span class="material-symbols-outlined text-[18px]">inventory</span>
                 Catálogo
@@ -24,8 +28,14 @@
         </div>
     </header>
 
-    <!-- Tab 1: CRM & Scent Insights -->
-    @if($activeTab === 'crm')
+    <!-- Tab 1.5: Panel de Ventas -->
+    @if($activeTab === 'ventas')
+        <div class="space-y-8 animate-fade-in">
+            <h2 class="text-2xl font-bold font-headline mb-4">Panel de Ventas</h2>
+            
+            @include('livewire.metrics-dashboard')
+        </div>
+    @elseif($activeTab === 'crm')
         <div class="space-y-8 animate-fade-in">
             <!-- Bento Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -279,6 +289,16 @@
                         <span class="material-symbols-outlined">add_circle</span>
                         Añadir Nuevo Perfume
                     </h3>
+
+                    <!-- Botón de carga rápida PDF -->
+                    @if($iaDocumentationEnabled)
+                    <div class="mb-6 p-4 rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 flex flex-col items-center justify-center gap-1.5 text-center transition-colors hover:bg-primary/10 cursor-pointer" onclick="alert('Función de extracción de PDF en desarrollo')">
+                        <span class="material-symbols-outlined text-primary text-[28px]">picture_as_pdf</span>
+                        <span class="text-sm font-bold text-primary font-headline">Cargar documentación</span>
+                        <span class="text-xs text-on-surface-variant font-body px-2">Sube un PDF para autocompletar rápidamente.</span>
+                    </div>
+                    @endif
+
                     <form wire:submit.prevent="addProduct" class="space-y-4 font-body">
                         <div>
                             <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Nombre</label>
