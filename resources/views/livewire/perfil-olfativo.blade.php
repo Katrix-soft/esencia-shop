@@ -155,8 +155,18 @@
                             <p class="text-on-surface-variant text-xs font-bold tracking-widest uppercase mb-2 font-body">{{ $prod['type'] }}</p>
                             <h3 class="text-2xl font-bold mb-4 font-headline text-on-surface">{{ $prod['name'] }}</h3>
                             <div class="flex justify-between items-center">
-                                <span class="text-xl font-display text-primary font-body">${{ number_format($prod['price'], 2) }}</span>
-                                <button wire:click="addToCart('{{ $prod['name'] }}')" class="w-10 h-10 rounded-full border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors">
+                                <div class="flex flex-col">
+                                    @if(isset($prod['discount']) && $prod['discount'] > 0)
+                                        <span class="text-[10px] font-bold text-outline-variant line-through mb-0.5">${{ number_format($prod['original_price'], 2) }}</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xl font-display text-primary font-body">${{ number_format($prod['price'], 2) }}</span>
+                                            <span class="bg-[#dcc48e]/20 text-[#8a6e30] px-1 py-0.5 rounded text-[9px] font-bold uppercase">{{ $prod['discount'] }}% OFF</span>
+                                        </div>
+                                    @else
+                                        <span class="text-xl font-display text-primary font-body">${{ number_format($prod['price'], 2) }}</span>
+                                    @endif
+                                </div>
+                                <button wire:click="addToCart({{ $prod['id'] }})" class="w-10 h-10 rounded-full border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors">
                                     <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
                                 </button>
                             </div>

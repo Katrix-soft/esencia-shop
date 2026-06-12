@@ -45,8 +45,12 @@ class ProductCard extends Component
                 $this->product->id,
                 $this->product->name,
                 1,
-                $this->product->price,
-                ['image' => $this->product->image]
+                $this->product->discounted_price,
+                [
+                    'image' => $this->product->image,
+                    'original_price' => $this->product->price,
+                    'discount' => $this->product->discount
+                ]
             );
         }
         

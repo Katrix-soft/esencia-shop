@@ -28,6 +28,8 @@ class Cart extends Component
                 'type' => $item->options->type ?? 'Fragancia',
                 'size' => $item->options->size ?? '50ml',
                 'price' => $item->price,
+                'original_price' => $item->options->original_price ?? $item->price,
+                'discount' => $item->options->discount ?? 0,
                 'quantity' => $item->qty,
                 'img' => $item->options->image ?? '',
                 'has_stock_error' => (is_numeric($item->id) && $item->qty > $stock)

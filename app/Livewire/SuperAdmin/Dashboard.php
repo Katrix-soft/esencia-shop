@@ -168,9 +168,9 @@ class Dashboard extends Component
 
     public function actionClicked($action)
     {
-        if ($action === 'Plan Semilla') {
+        if ($action === 'Plan Toilette') {
             $this->showSemillaPlanModal = true;
-        } elseif ($action === 'Plan Flor') {
+        } elseif ($action === 'Plan Parfum') {
             $this->showBasicPlanModal = true;
         } elseif ($action === 'Plan Extracto') {
             $this->showPremiumPlanModal = true;
@@ -205,10 +205,12 @@ class Dashboard extends Component
 
         $this->enabledMetrics = $semillaMetrics;
         cache()->put('metrics_config_global', $this->enabledMetrics);
+        cache(['plan_id' => 'toilette']);
+        $this->planId = 'toilette';
         
         $this->showSemillaPlanModal = false;
-        session()->flash('message', 'Plan Semilla aplicado. Solo se han habilitado las funciones solicitadas.');
-        $this->logActivity('PLAN APPLY', 'Plan Semilla aplicado al tenant.');
+        session()->flash('message', 'Plan Toilette aplicado. Solo se han habilitado las funciones solicitadas.');
+        $this->logActivity('PLAN APPLY', 'Plan Toilette aplicado al tenant.');
     }
 
     public function applyBasicPlan()
@@ -231,10 +233,12 @@ class Dashboard extends Component
 
         $this->enabledMetrics = $basicMetrics;
         cache()->put('metrics_config_global', $this->enabledMetrics);
+        cache(['plan_id' => 'parfum']);
+        $this->planId = 'parfum';
         
         $this->showBasicPlanModal = false;
-        session()->flash('message', 'Plan Básico aplicado. Solo se han habilitado las funciones esenciales.');
-        $this->logActivity('PLAN APPLY', 'Plan Básico (Flor) aplicado al tenant.');
+        session()->flash('message', 'Plan Parfum aplicado. Solo se han habilitado las funciones esenciales.');
+        $this->logActivity('PLAN APPLY', 'Plan Parfum aplicado al tenant.');
     }
 
     public function applyPremiumPlan()
@@ -257,6 +261,8 @@ class Dashboard extends Component
 
         $this->enabledMetrics = $premiumMetrics;
         cache()->put('metrics_config_global', $this->enabledMetrics);
+        cache(['plan_id' => 'extracto']);
+        $this->planId = 'extracto';
         
         $this->showPremiumPlanModal = false;
         session()->flash('message', 'Plan Premium aplicado. Se han habilitado todos los módulos y métricas.');

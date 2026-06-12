@@ -28,37 +28,50 @@
         </div>
         
         <!-- Messages Area -->
-        <div class="p-4 h-64 overflow-y-auto bg-surface-bright flex flex-col gap-4">
-            <div class="flex gap-2">
+        <div class="p-4 h-64 overflow-y-auto bg-surface-bright flex flex-col gap-4" id="chat-messages-container" x-ref="messagesContainer" x-init="$watch('messages', () => { $refs.messagesContainer.scrollTop = $refs.messagesContainer.scrollHeight })">
+            @foreach($messages as $msg)
+                @if($msg['role'] === 'user')
+                    <div class="flex gap-2 flex-row-reverse">
+                        <div class="bg-primary-container text-on-primary-container p-3 rounded-2xl rounded-tr-sm text-sm max-w-[85%] leading-relaxed shadow-sm">
+                            {{ $msg['content'] }}
+                        </div>
+                    </div>
+                @else
+                    <div class="flex gap-2">
+                        <div class="w-6 h-6 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center mt-1">
+                            <span class="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
+                        </div>
+                        <div class="bg-surface-container p-3 rounded-2xl rounded-tl-sm text-sm text-on-surface max-w-[85%] leading-relaxed shadow-sm">
+                            {!! nl2br(e($msg['content'])) !!}
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+
+            <!-- Typing indicator -->
+            <div wire:loading wire:target="sendMessage" class="flex gap-2">
                 <div class="w-6 h-6 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center mt-1">
                     <span class="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
                 </div>
-                <div class="bg-surface-container p-3 rounded-2xl rounded-tl-sm text-sm text-on-surface max-w-[85%] leading-relaxed shadow-sm">
-                    ¡Hola! Soy tu asistente botánico. ¿Buscas algo fresco para el día o cálido para la noche?
-                </div>
-            </div>
-            <div class="flex gap-2 flex-row-reverse">
-                <div class="bg-primary-container text-on-primary-container p-3 rounded-2xl rounded-tr-sm text-sm max-w-[85%] leading-relaxed shadow-sm">
-                    Me gustan los aromas a madera y bosque.
-                </div>
-            </div>
-            <div class="flex gap-2">
-                <div class="w-6 h-6 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center mt-1">
-                    <span class="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
-                </div>
-                <div class="bg-surface-container p-3 rounded-2xl rounded-tl-sm text-sm text-on-surface max-w-[85%] leading-relaxed shadow-sm">
-                    ¡Excelente elección! Te recomiendo explorar el <strong>Santal Raíz</strong> o filtrar por la familia "Amaderado". ¿Quieres que te muestre opciones con cedro?
+                <div class="bg-surface-container p-3 rounded-2xl rounded-tl-sm text-sm text-on-surface max-w-[85%] leading-relaxed shadow-sm flex items-center gap-1 h-8">
+                    <span class="w-1.5 h-1.5 bg-primary/50 rounded-full animate-bounce"></span>
+                    <span class="w-1.5 h-1.5 bg-primary/50 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                    <span class="w-1.5 h-1.5 bg-primary/50 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
                 </div>
             </div>
         </div>
         
         <!-- Input Area -->
-        <div class="p-3 bg-surface-container-lowest border-t border-surface-container-highest flex items-center gap-2">
-            <input type="text" class="flex-grow bg-surface border-none rounded-full px-4 py-2 text-sm text-on-background focus:ring-2 focus:ring-primary/50 placeholder-on-surface-variant/60" placeholder="Escribe tu preferencia...">
-            <button class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0 shadow-sm">
-                <span class="material-symbols-outlined text-[20px]">send</span>
+        <form wire:submit.prevent="sendMessage" class="p-3 bg-surface-container-lowest border-t border-surface-container-highest flex items-center gap-2">
+            <input type="text" wire:model="userInput" wire:loading.attr="disabled" class="flex-grow bg-surface border-none rounded-full px-4 py-2 text-sm text-on-background focus:ring-2 focus:ring-primary/50 placeholder-on-surface-variant/60 disabled:opacity-50" placeholder="Escribe tu preferencia...">
+            <button type="submit" wire:loading.attr="disabled" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary/90 transition-colors flex-shrink-0 shadow-sm disabled:opacity-50">
+                <span class="material-symbols-outlined text-[20px]" wire:loading.remove wire:target="sendMessage">send</span>
+                <span class="material-symbols-outlined text-[20px] animate-spin" wire:loading wire:target="sendMessage" style="display:none;">sync</span>
             </button>
-        </div>
+            <button type="button" wire:click="resetChat" title="Reiniciar chat" class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center hover:bg-surface-container-highest transition-colors flex-shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+            </button>
+        </form>
     </div>
     
     <!-- FAB -->

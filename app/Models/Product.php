@@ -11,7 +11,7 @@ class Product extends Model implements StockableProduct
     public function getId(): int|string { return $this->id; }
     public static function findForCart($id): ?static { return static::find($id); }
     protected $fillable = [
-        'category_id', 'name', 'description', 'price', 'image',
+        'category_id', 'name', 'description', 'price', 'discount', 'image',
         'wood', 'citrus', 'floral', 'stock',
         'fragella_id', 'brand', 'year', 'rating', 'popularity',
         'gender', 'longevity', 'sillage', 'general_notes',
@@ -26,6 +26,14 @@ class Product extends Model implements StockableProduct
             'main_accords_percentage' => 'array',
             'notes' => 'array',
         ];
+    }
+
+    public function getDiscountedPriceAttribute()
+    {
+        if (!$this->discount || $this->discount <= 0) {
+            return $this->price;
+        }
+        return $this->price - ($this->price * ($this->discount / 100));
     }
 
     public function category()

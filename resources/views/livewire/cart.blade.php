@@ -48,7 +48,15 @@
                                         <span class="text-xs text-error font-bold block mb-1">Stock superado</span>
                                         <div class="text-lg font-bold text-outline-variant line-through">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</div>
                                     @else
-                                        <div class="text-xl font-bold text-primary">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</div>
+                                        @if(isset($item['discount']) && $item['discount'] > 0)
+                                            <span class="text-xs font-bold text-outline-variant line-through block text-right mb-0.5">${{ number_format($item['original_price'] * $item['quantity'], 0, ',', '.') }}</span>
+                                            <div class="text-xl font-bold text-primary flex items-center justify-end gap-2">
+                                                <span class="bg-[#dcc48e]/20 text-[#8a6e30] px-1.5 py-0.5 rounded text-[10px] font-bold uppercase">{{ $item['discount'] }}% OFF</span>
+                                                ${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
+                                            </div>
+                                        @else
+                                            <div class="text-xl font-bold text-primary">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</div>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
@@ -74,15 +82,17 @@
                         </div>
                     </div>
                     <!-- Points Badge -->
+                    @if(cache('club_cologne_enabled', true))
                     <div class="bg-tertiary-fixed/40 rounded-lg p-4 flex items-center gap-3 border border-tertiary/20">
                         <div class="bg-tertiary text-on-tertiary rounded-full p-2 flex items-center justify-center">
                             <span class="material-symbols-outlined text-sm">spa</span>
                         </div>
                         <div>
                             <p class="text-sm text-on-surface-variant">Puntos a ganar</p>
-                            <p class="font-bold text-tertiary">+{{ $this->points }} Semillas</p>
+                            <p class="font-bold text-tertiary">+{{ $this->points }} Puntos</p>
                         </div>
                     </div>
+                    @endif
                     <div class="flex justify-between items-center border-t border-outline-variant/30 pt-4 mt-2">
                         <span class="text-lg font-bold text-on-surface">Total</span>
                         <span class="text-3xl font-headline font-bold text-primary">${{ number_format($this->total, 0, ',', '.') }}</span>

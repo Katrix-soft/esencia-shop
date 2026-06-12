@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use App\Models\User;
@@ -13,26 +14,34 @@ use App\Models\Category;
 #[Title('Administración & CRM - Esencia')]
 class Dashboard extends Component
 {
+    use WithFileUploads;
     public $activeTab = 'crm';
     public $searchCustomer = '';
     public $searchProduct = '';
     public $filterOrderStatus = 'all';
     public $iaDocumentationEnabled = true;
     public $enabledMetrics = [];
+    public $clubCologneEnabled = true;
 
     // Estado del Formulario de Creación de Producto
     public $newName = '';
     public $newPrice = 0;
+    public $newDiscount = 0;
     public $newDescription = '';
     public $newFamily = 'Amaderado';
     public $newWood = 50;
     public $newCitrus = 30;
     public $newFloral = 20;
+    public $newImage;
+
+    // Propiedad para el Plan
+    public $currentPlanName = 'CUENTA PREMIUM';
 
     // Estado de Edición de Producto
     public $editingProductId = null;
     public $editName = '';
     public $editPrice = 0;
+    public $editDiscount = 0;
     public $editDescription = '';
     public $editWood = 50;
     public $editCitrus = 30;
@@ -46,6 +55,7 @@ class Dashboard extends Component
         }
 
         $this->iaDocumentationEnabled = cache('feature_ia_documentation_enabled', true);
+        $this->clubCologneEnabled = cache('club_cologne_enabled', true);
         
         $this->enabledMetrics = cache()->get('metrics_config_global', [
             'Ingresos totales' => true,
@@ -62,6 +72,19 @@ class Dashboard extends Component
             'Stock bajo' => true,
             'Más visitados' => true,
         ]);
+
+        $planId = cache('plan_id', '');
+        if ($planId === 'toilette') {
+            $this->currentPlanName = 'PLAN TOILETTE';
+        } elseif ($planId === 'parfum') {
+            $this->currentPlanName = 'PLAN PARFUM';
+        } elseif ($planId === 'extracto' || $planId === 'premium') {
+            $this->currentPlanName = 'PLAN EXTRACTO';
+        } elseif (!empty($planId)) {
+            $this->currentPlanName = strtoupper($planId);
+        } else {
+            $this->currentPlanName = 'CUENTA PREMIUM';
+        }
     }
 
     public function switchTab($tab)
@@ -141,7 +164,9 @@ class Dashboard extends Component
         $this->validate([
             'newName' => 'required|min:3',
             'newPrice' => 'required|numeric|min:1',
+            'newDiscount' => 'nullable|numeric|min:0',
             'newDescription' => 'required',
+            'newImage' => 'nullable|image|max:4096', // 4MB Max
         ]);
 
         $category = Category::where('name', $this->newFamily)->first();
@@ -149,11 +174,18 @@ class Dashboard extends Component
             $category = Category::first();
         }
 
+        $imagePath = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkd86VqaTTXdLZbhBi6DX0-QkTt7recLHsKpzhyvRu6NDRINeZ78Z5LfjpbWEy77zHGNTtim-InM59yDZOLxUMHGv_P_7Ekk1Lr0d8ClDH0BNvnB2QlIKX30wOQc3OZW7hSl0e5k7xb97Rsjg2WoVRqiLwoh9lFSelhOi0jP3gUPYTIZ2pcLlZ90K9bL5dwGf3mXYItL4ZznxilvdyNLkcYfyWVqGQskFj82dNd4cqyDiSRUkYmZVnPeqQwHMywDf78pFWMINP15o';
+        
+        if ($this->newImage) {
+            $imagePath = $this->newImage->store('products', 'public');
+        }
+
         Product::create([
             'name' => $this->newName,
             'description' => $this->newDescription,
             'price' => $this->newPrice,
-            'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkd86VqaTTXdLZbhBi6DX0-QkTt7recLHsKpzhyvRu6NDRINeZ78Z5LfjpbWEy77zHGNTtim-InM59yDZOLxUMHGv_P_7Ekk1Lr0d8ClDH0BNvnB2QlIKX30wOQc3OZW7hSl0e5k7xb97Rsjg2WoVRqiLwoh9lFSelhOi0jP3gUPYTIZ2pcLlZ90K9bL5dwGf3mXYItL4ZznxilvdyNLkcYfyWVqGQskFj82dNd4cqyDiSRUkYmZVnPeqQwHMywDf78pFWMINP15o',
+            'discount' => (int)$this->newDiscount,
+            'image' => $imagePath,
             'category_id' => $category->id,
             'wood' => (int)$this->newWood,
             'citrus' => (int)$this->newCitrus,
@@ -164,10 +196,12 @@ class Dashboard extends Component
         // Reset fields
         $this->newName = '';
         $this->newPrice = 0;
+        $this->newDiscount = 0;
         $this->newDescription = '';
         $this->newWood = 50;
         $this->newCitrus = 30;
         $this->newFloral = 20;
+        $this->newImage = null;
 
         session()->flash('product_success', 'Producto agregado con éxito al catálogo.');
     }
@@ -179,6 +213,7 @@ class Dashboard extends Component
             $this->editingProductId = $productId;
             $this->editName = $product->name;
             $this->editPrice = $product->price;
+            $this->editDiscount = $product->discount ?? 0;
             $this->editDescription = $product->description;
             $this->editWood = $product->wood;
             $this->editCitrus = $product->citrus;
@@ -191,6 +226,7 @@ class Dashboard extends Component
         $this->validate([
             'editName' => 'required|min:3',
             'editPrice' => 'required|numeric|min:1',
+            'editDiscount' => 'nullable|numeric|min:0',
             'editDescription' => 'required',
         ]);
 
@@ -199,6 +235,7 @@ class Dashboard extends Component
             $product->update([
                 'name' => $this->editName,
                 'price' => $this->editPrice,
+                'discount' => (int)$this->editDiscount,
                 'description' => $this->editDescription,
                 'wood' => (int)$this->editWood,
                 'citrus' => (int)$this->editCitrus,
@@ -213,6 +250,16 @@ class Dashboard extends Component
     public function cancelEdit()
     {
         $this->editingProductId = null;
+    }
+
+    public function updateProductDiscount($productId, $discount)
+    {
+        $product = Product::find($productId);
+        if ($product) {
+            $product->discount = (int)$discount;
+            $product->save();
+            session()->flash('product_success', 'Descuento actualizado.');
+        }
     }
 
     // --- ACCIONES DE PEDIDOS ---
@@ -235,6 +282,14 @@ class Dashboard extends Component
             $order->save();
             session()->flash('order_success', "Pedido {$order->order_number} actualizado a {$newStatus}.");
         }
+    }
+
+    public function toggleClubCologne()
+    {
+        $this->clubCologneEnabled = !$this->clubCologneEnabled;
+        cache(['club_cologne_enabled' => $this->clubCologneEnabled]);
+        $status = $this->clubCologneEnabled ? 'habilitado' : 'deshabilitado';
+        session()->flash('message', "El Club de Cologne ha sido {$status}.");
     }
 
     public function render()

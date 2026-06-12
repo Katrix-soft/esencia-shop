@@ -174,8 +174,14 @@
     <div class="mt-8 p-4 bg-surface-container-low text-on-surface-variant rounded-xl border border-outline-variant/30 flex items-start gap-3 text-sm shadow-[0_2px_15px_rgba(46,50,48,0.03)]">
         <span class="material-symbols-outlined text-primary mt-0.5" style="font-variation-settings: 'FILL' 1;">spa</span>
         <div>
-            <h5 class="font-bold text-on-surface text-xs mb-0.5 font-body">Beneficios del Club Esencia</h5>
-            <p class="text-xs text-on-surface-variant/90 leading-relaxed font-body">Con tu cuenta acumulas semillas de descuento, guardas tus fragancias favoritas y accedes a preventas exclusivas de decants importados.</p>
+            <h5 class="font-bold text-on-surface text-xs mb-0.5 font-body">Beneficios de tu Cuenta</h5>
+            <p class="text-xs text-on-surface-variant/90 leading-relaxed font-body">
+                Con tu cuenta
+                @if(cache('club_cologne_enabled', true))
+                acumulas puntos de descuento,
+                @endif
+                guardas tus fragancias favoritas y accedes a preventas exclusivas de decants importados.
+            </p>
         </div>
     </div>
 </div>

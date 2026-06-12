@@ -1,491 +1,433 @@
-<div class="w-full bg-background min-h-screen py-12 px-6 max-w-7xl mx-auto">
-    <!-- Header -->
-    <header class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-outline-variant/30 pb-6">
-        <div>
-            <span class="inline-block py-1 px-4 mb-2 bg-primary/10 text-primary font-bold rounded-full text-xs tracking-wider uppercase font-body">Módulos Internos</span>
-            <h1 class="text-4xl font-headline font-bold text-on-surface">Panel de Control & CRM</h1>
-            <p class="text-on-surface-variant font-body mt-1">Supervisa las analíticas olfativas, el catálogo de decants y los pedidos de los clientes.</p>
+<div class="flex bg-[#f4f2ec] font-body relative">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#14231A] text-white flex flex-col transition-all duration-300 shadow-xl z-20 sticky top-0 h-screen">
+        <!-- Logo -->
+        <div class="p-8 pb-6 flex flex-col items-center justify-center text-center">
+            <h2 class="text-[26px] font-display font-bold tracking-[0.15em] text-[#dcc48e]">ESENCIA</h2>
+            <p class="text-[9px] tracking-[0.3em] text-[#dcc48e]/60 uppercase mt-1">Parfumerie</p>
         </div>
         
-        <!-- Navigation Tabs -->
-        <div class="flex bg-surface-container-low p-1.5 rounded-xl border border-outline-variant/30">
-            <button wire:click="switchTab('crm')" class="px-5 py-2.5 rounded-lg text-sm font-bold transition-all font-body flex items-center gap-2 {{ $activeTab === 'crm' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-primary' }}">
-                <span class="material-symbols-outlined text-[18px]">group</span>
-                CRM & Insights
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
+            <p class="px-4 text-[10px] text-white/40 uppercase tracking-widest font-bold mb-3 mt-2">Principal</p>
+            <button wire:click="switchTab('crm')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all {{ $activeTab === 'crm' ? 'bg-[#4a7c59] text-white font-bold shadow-md' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
+                <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'crm' ? 'font-variation-settings: \'FILL\' 1' : '' }}">home</span>
+                <span class="text-[13px]">Dashboard</span>
             </button>
-            <button wire:click="switchTab('ventas')" class="px-5 py-2.5 rounded-lg text-sm font-bold transition-all font-body flex items-center gap-2 {{ $activeTab === 'ventas' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-primary' }}">
-                <span class="material-symbols-outlined text-[18px]">monitoring</span>
-                Panel de Ventas
-            </button>
-            <button wire:click="switchTab('products')" class="px-5 py-2.5 rounded-lg text-sm font-bold transition-all font-body flex items-center gap-2 {{ $activeTab === 'products' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-primary' }}">
-                <span class="material-symbols-outlined text-[18px]">inventory</span>
-                Catálogo
-            </button>
-            <button wire:click="switchTab('orders')" class="px-5 py-2.5 rounded-lg text-sm font-bold transition-all font-body flex items-center gap-2 {{ $activeTab === 'orders' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-primary' }}">
-                <span class="material-symbols-outlined text-[18px]">receipt_long</span>
-                Pedidos
-            </button>
-        </div>
-    </header>
-
-    <!-- Tab 1.5: Panel de Ventas -->
-    @if($activeTab === 'ventas')
-        <div class="space-y-8 animate-fade-in">
-            <h2 class="text-2xl font-bold font-headline mb-4">Panel de Ventas</h2>
             
-            @include('livewire.metrics-dashboard')
-        </div>
-    @elseif($activeTab === 'crm')
-        <div class="space-y-8 animate-fade-in">
-            <!-- Bento Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <!-- Stat 1 -->
-                <div class="bg-surface-container-high rounded-2xl p-6 border border-outline-variant/20 shadow-sm flex items-center gap-4">
-                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[28px]">payments</span>
-                    </div>
-                    <div>
-                        <span class="text-xs text-on-surface-variant font-body">Ventas Totales</span>
-                        <h4 class="text-2xl font-bold font-headline mt-1">${{ number_format(\App\Models\Order::sum('total'), 0, ',', '.') }}</h4>
-                    </div>
-                </div>
-                <!-- Stat 2 -->
-                <div class="bg-surface-container-high rounded-2xl p-6 border border-outline-variant/20 shadow-sm flex items-center gap-4">
-                    <div class="w-12 h-12 bg-tertiary/10 text-tertiary rounded-xl flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[28px]">shopping_bag</span>
-                    </div>
-                    <div>
-                        <span class="text-xs text-on-surface-variant font-body">Ticket Promedio</span>
-                        <h4 class="text-2xl font-bold font-headline mt-1">${{ number_format(\App\Models\Order::count() > 0 ? \App\Models\Order::sum('total') / \App\Models\Order::count() : 0, 0, ',', '.') }}</h4>
-                    </div>
-                </div>
-                <!-- Stat 3 -->
-                <div class="bg-surface-container-high rounded-2xl p-6 border border-outline-variant/20 shadow-sm flex items-center gap-4">
-                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[28px]">trending_up</span>
-                    </div>
-                    <div>
-                        <span class="text-xs text-on-surface-variant font-body">Conversión Web</span>
-                        <h4 class="text-2xl font-bold font-headline mt-1">3.4%</h4>
-                    </div>
-                </div>
-                <!-- Stat 4 -->
-                <div class="bg-surface-container-high rounded-2xl p-6 border border-outline-variant/20 shadow-sm flex items-center gap-4">
-                    <div class="w-12 h-12 bg-tertiary-fixed-dim/10 text-tertiary-fixed-dim rounded-xl flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[28px]">group_add</span>
-                    </div>
-                    <div>
-                        <span class="text-xs text-on-surface-variant font-body">Clientes Activos</span>
-                        <h4 class="text-2xl font-bold font-headline mt-1">{{ \App\Models\User::has('orders')->count() ?: \App\Models\User::count() }}</h4>
-                    </div>
+            <p class="px-4 text-[10px] text-white/40 uppercase tracking-widest font-bold mb-3 mt-8">Gestión</p>
+            <button wire:click="switchTab('products')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all {{ $activeTab === 'products' ? 'bg-[#4a7c59] text-white font-bold shadow-md' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
+                <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'products' ? 'font-variation-settings: \'FILL\' 1' : '' }}">inventory_2</span>
+                <span class="text-[13px]">Catálogo</span>
+            </button>
+            <button wire:click="switchTab('orders')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all {{ $activeTab === 'orders' ? 'bg-[#4a7c59] text-white font-bold shadow-md' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
+                <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'orders' ? 'font-variation-settings: \'FILL\' 1' : '' }}">receipt_long</span>
+                <span class="text-[13px]">Pedidos</span>
+            </button>
+            <button wire:click="switchTab('promotions')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all {{ $activeTab === 'promotions' ? 'bg-[#4a7c59] text-white font-bold shadow-md' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
+                <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'promotions' ? 'font-variation-settings: \'FILL\' 1' : '' }}">sell</span>
+                <span class="text-[13px]">Promociones</span>
+            </button>
+        </nav>
+
+        <div class="p-6 border-t border-white/10 mt-auto">
+            <p class="text-[10px] text-white/40 mb-3 tracking-widest uppercase text-center">{{ $currentPlanName ?? 'CUENTA PREMIUM' }}</p>
+            <div class="flex items-center gap-3">
+                <img src="https://ui-avatars.com/api/?name=Super+Admin&background=4a7c59&color=fff&rounded=true" class="w-10 h-10 shadow-lg">
+                <div>
+                    <p class="text-[13px] font-bold text-white leading-tight">Super Admin</p>
+                    <p class="text-[10px] text-[#dcc48e]">Owner</p>
                 </div>
             </div>
+        </div>
+    </aside>
 
-            <!-- Scent Insights & Loyalty Summary -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Olfactory Distribution Chart -->
-                <div class="bg-surface-container-low border border-outline-variant/20 rounded-2xl p-8 flex flex-col items-center justify-center">
-                    <div class="mb-6 w-full flex justify-between items-start">
-                        <div class="text-left">
-                            <h3 class="text-lg font-bold font-headline">Distribución de Perfiles Olfativos</h3>
-                            <p class="text-xs text-on-surface-variant font-body">Familias preferidas de los clientes testeados.</p>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0">
+        <!-- Topbar -->
+        <header class="bg-[#f4f2ec] py-6 px-8 flex justify-between items-center z-10">
+            <h1 class="text-2xl font-headline font-bold text-on-surface tracking-tight flex items-center gap-2">
+                @if($activeTab === 'crm') Dashboard General
+                @elseif($activeTab === 'products') Gestión de Inventario
+                @elseif($activeTab === 'orders') Estado de Pedidos
+                @elseif($activeTab === 'promotions') Promociones y Fidelidad
+                @endif
+            </h1>
+            
+            <div class="flex items-center gap-6">
+                <!-- Search -->
+                <div class="relative w-72 hidden lg:block shadow-sm rounded-full bg-white border border-outline-variant/20 overflow-hidden">
+                    <span class="material-symbols-outlined absolute left-3.5 top-2.5 text-on-surface-variant/50 text-[18px]">search</span>
+                    <input type="text" placeholder="Buscar productos, clientes..." class="w-full pl-10 pr-4 py-2.5 bg-transparent text-[13px] font-body focus:outline-none">
+                </div>
+                <!-- Notifs -->
+                <button class="relative text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2 bg-white p-2 rounded-full border border-outline-variant/20 shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-error rounded-full border border-white"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Scrollable content area -->
+        <div class="flex-1 px-8 pb-12">
+            
+            <!-- Tab 1: CRM & Insights -->
+            @if($activeTab === 'crm')
+            <div class="animate-fade-in space-y-6">
+                
+
+
+                <!-- Unified Analytics & CRM Card -->
+                <div class="bg-white rounded-[20px] p-6 shadow-[0_2px_15px_rgba(46,50,48,0.04)]">
+                    <div class="flex justify-between items-start mb-6 pb-4 border-b border-outline-variant/10">
+                        <div>
+                            <h3 class="text-[17px] font-bold font-headline text-on-surface tracking-tight">CRM y Perfiles Olfativos</h3>
+                            <p class="text-[12px] text-on-surface-variant font-bold mt-1">Gestión de fidelidad y distribución de familias aromáticas IA</p>
                         </div>
-                        <span class="material-symbols-outlined text-primary">auto_awesome</span>
-                    </div>
-                    
-                    <!-- SVG Pie / Donut Chart -->
-                    @php
-                        $insights = $this->scentInsights;
-                        $woodDeg = $insights['wood'] * 3.6;
-                        $citrusDeg = $insights['citrus'] * 3.6;
-                        $floralDeg = $insights['floral'] * 3.6;
-                    @endphp
-                    <div class="relative w-48 h-48 flex items-center justify-center my-4">
-                        <svg class="w-full h-full -rotate-90" viewBox="0 0 42 42">
-                            <!-- Background ring -->
-                            <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#e0e0e0" stroke-width="4"></circle>
-                            
-                            <!-- Wood Segment -->
-                            <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#4a7c59" stroke-width="4" 
-                                    stroke-dasharray="{{ $insights['wood'] }} {{ 100 - $insights['wood'] }}" 
-                                    stroke-dashoffset="100"></circle>
-                            
-                            <!-- Citrus Segment -->
-                            <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#705c30" stroke-width="4" 
-                                    stroke-dasharray="{{ $insights['citrus'] }} {{ 100 - $insights['citrus'] }}" 
-                                    stroke-dashoffset="{{ 100 - $insights['wood'] }}"></circle>
-                            
-                            <!-- Floral Segment -->
-                            <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#dcc48e" stroke-width="4" 
-                                    stroke-dasharray="{{ $insights['floral'] }} {{ 100 - $insights['floral'] }}" 
-                                    stroke-dashoffset="{{ 100 - $insights['wood'] - $insights['citrus'] }}"></circle>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="text-3xl font-display font-bold text-primary">{{ $insights['total'] }}</span>
-                            <span class="text-[9px] font-bold text-on-surface-variant tracking-wider uppercase font-body">Perfiles IA</span>
+                        <!-- Search Table -->
+                        <div class="relative w-56">
+                            <span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant/50 text-[16px]">search</span>
+                            <input type="text" wire:model.live="searchCustomer" placeholder="Buscar cliente..." class="w-full pl-9 pr-3 py-1.5 border border-outline-variant/20 bg-[#f4f2ec] rounded-lg text-[12px] font-body focus:outline-none focus:border-primary">
                         </div>
                     </div>
 
-                    <!-- Legend -->
-                    <div class="grid grid-cols-3 gap-2 w-full mt-6 text-center">
-                        <div>
-                            <div class="w-3 h-3 rounded-full bg-primary mx-auto mb-1"></div>
-                            <span class="text-[10px] text-on-surface-variant font-body">Amaderado</span>
-                            <p class="text-xs font-bold text-primary">{{ $insights['wood'] }}%</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Distribución Perfiles (Izquierda) -->
+                        <div class="flex-1 flex flex-col items-center justify-start lg:border-r border-outline-variant/10 lg:pr-8 py-2">
+                            @php
+                                $insights = $this->scentInsights;
+                            @endphp
+                            <div class="relative w-44 h-44 flex items-center justify-center">
+                                <svg class="w-full h-full -rotate-90" viewBox="0 0 42 42">
+                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#f4f2ec" stroke-width="4"></circle>
+                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#14231A" stroke-width="4" 
+                                            stroke-dasharray="{{ $insights['wood'] }} {{ 100 - $insights['wood'] }}" 
+                                            stroke-dashoffset="100"></circle>
+                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#4a7c59" stroke-width="4" 
+                                            stroke-dasharray="{{ $insights['citrus'] }} {{ 100 - $insights['citrus'] }}" 
+                                            stroke-dashoffset="{{ 100 - $insights['wood'] }}"></circle>
+                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#dcc48e" stroke-width="4" 
+                                            stroke-dasharray="{{ $insights['floral'] }} {{ 100 - $insights['floral'] }}" 
+                                            stroke-dashoffset="{{ 100 - $insights['wood'] - $insights['citrus'] }}"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="text-[28px] font-headline font-bold text-on-surface leading-none">{{ $insights['total'] }}</span>
+                                    <span class="text-[9px] font-bold text-on-surface-variant uppercase mt-1 tracking-widest">Perfiles</span>
+                                </div>
+                            </div>
+
+                            <div class="w-full mt-8 flex justify-around">
+                                <div class="text-center">
+                                    <div class="w-3 h-3 rounded-full bg-[#14231A] mx-auto mb-1"></div>
+                                    <p class="text-[12px] font-bold text-on-surface leading-tight">{{ $insights['wood'] }}%</p>
+                                    <span class="text-[10px] text-on-surface-variant font-bold">Amaderado</span>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-3 h-3 rounded-full bg-[#4a7c59] mx-auto mb-1"></div>
+                                    <p class="text-[12px] font-bold text-on-surface leading-tight">{{ $insights['citrus'] }}%</p>
+                                    <span class="text-[10px] text-on-surface-variant font-bold">Cítrico</span>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-3 h-3 rounded-full bg-[#dcc48e] mx-auto mb-1"></div>
+                                    <p class="text-[12px] font-bold text-on-surface leading-tight">{{ $insights['floral'] }}%</p>
+                                    <span class="text-[10px] text-on-surface-variant font-bold">Floral</span>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="w-3 h-3 rounded-full bg-tertiary mx-auto mb-1"></div>
-                            <span class="text-[10px] text-on-surface-variant font-body">Cítrico</span>
-                            <p class="text-xs font-bold text-tertiary">{{ $insights['citrus'] }}%</p>
-                        </div>
-                        <div>
-                            <div class="w-3 h-3 rounded-full bg-tertiary-fixed-dim mx-auto mb-1"></div>
-                            <span class="text-[10px] text-on-surface-variant font-body">Floral/Otro</span>
-                            <p class="text-xs font-bold text-tertiary-fixed-dim">{{ $insights['floral'] }}%</p>
+
+                        <!-- CRM Table (Derecha) -->
+                        <div class="lg:col-span-2 overflow-x-auto py-2">
+                            <table class="w-full text-left border-collapse min-w-[500px]">
+                                <thead>
+                                    <tr class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest border-b border-outline-variant/10">
+                                        <th class="py-2 pb-4">Cliente</th>
+                                        <th class="py-2 pb-4">Perfil Olfativo</th>
+                                        @if($clubCologneEnabled)
+                                        <th class="py-2 pb-4 text-center">Puntos</th>
+                                        @endif
+                                        <th class="py-2 pb-4 text-right">Total Compras</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-[13px] font-body">
+                                    @forelse($this->customers as $customer)
+                                        @php
+                                            $profile = $customer->id % 3 == 0 ? 'Amaderado' : ($customer->id % 2 == 0 ? 'Cítrico' : 'Floral');
+                                            $badgeClass = $profile === 'Amaderado' ? 'bg-[#14231A]/10 text-[#14231A]' : ($profile === 'Cítrico' ? 'bg-[#4a7c59]/10 text-[#4a7c59]' : 'bg-[#dcc48e]/20 text-[#8a6e30]');
+                                        @endphp
+                                        <tr class="hover:bg-[#f4f2ec]/50 transition-colors border-b border-outline-variant/5 last:border-0">
+                                            <td class="py-3 flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-[#f4f2ec] border border-outline-variant/20 flex items-center justify-center font-bold text-on-surface text-[13px]">
+                                                    {{ substr($customer->name, 0, 1) }}
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-on-surface">{{ $customer->name }}</p>
+                                                    <p class="text-on-surface-variant text-[11px]">{{ $customer->email }}</p>
+                                                </div>
+                                            </td>
+                                            <td class="py-3">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold {{ $badgeClass }}">
+                                                    {{ $profile }}
+                                                </span>
+                                            </td>
+                                            @if($clubCologneEnabled)
+                                            <td class="py-3 text-center">
+                                                <span class="font-bold text-on-surface bg-[#f4f2ec] px-2 py-1 rounded-md text-[11px]">{{ $customer->orders_count * 10 }}</span>
+                                            </td>
+                                            @endif
+                                            <td class="py-3 text-right">
+                                                <p class="font-bold text-on-surface">${{ number_format($customer->orders_sum_total ?? 0, 0, ',', '.') }}</p>
+                                                <p class="text-on-surface-variant text-[10px]">{{ $customer->orders_count }} pedidos</p>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="py-8 text-center text-on-surface-variant text-[13px]">No se encontraron clientes.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- Customer CRM Search & Table -->
-                <div class="lg:col-span-2 bg-surface-container-low border border-outline-variant/20 rounded-2xl p-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                        <div>
-                            <h3 class="text-lg font-bold font-headline">CRM de Clientes</h3>
-                            <p class="text-xs text-on-surface-variant font-body">Gestión de semillas de fidelidad y perfiles aromáticos.</p>
+                <!-- Panel de Ventas Detallado -->
+                <div class="bg-white rounded-[20px] p-8 shadow-[0_2px_15px_rgba(46,50,48,0.04)] min-h-[600px] mt-6">
+                    @include('livewire.metrics-dashboard')
+                </div>
+            </div>
+            @endif
+
+            <!-- Tab 2: Catálogo de Productos -->
+            @if($activeTab === 'products')
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
+                    <!-- Product Alert Feedback -->
+                    @if (session()->has('product_success'))
+                        <div class="lg:col-span-12 p-4 bg-[#4a7c59]/10 text-[#4a7c59] rounded-xl border border-[#4a7c59]/20 flex items-start gap-3 shadow-sm font-body">
+                            <span class="material-symbols-outlined mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <div>
+                                <h4 class="font-bold text-[13px]">Operación Exitosa</h4>
+                                <p class="text-[12px]">{{ session('product_success') }}</p>
+                            </div>
                         </div>
-                        <!-- Search Bar -->
-                        <div class="relative w-full md:w-64">
-                            <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm">search</span>
-                            <input type="text" wire:model.live="searchCustomer" placeholder="Buscar cliente..." class="w-full pl-9 pr-4 py-2 border border-outline-variant/30 bg-surface rounded-full text-xs font-body focus:outline-none focus:border-primary">
+                    @endif
+
+                    <!-- Left: Add/Edit Product Panel -->
+                    <div class="lg:col-span-4 bg-white rounded-[20px] p-6 shadow-[0_2px_15px_rgba(46,50,48,0.04)] h-fit">
+                        @if($editingProductId)
+                            <h3 class="text-[17px] font-bold font-headline mb-6 text-primary flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[20px]">edit</span> Editar Producto
+                            </h3>
+                            <!-- Formulario de Edición (Igual a tu original pero ajustado) -->
+                            <form wire:submit.prevent="saveEdit" class="space-y-4">
+                                <div>
+                                    <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Nombre del Perfume</label>
+                                    <input type="text" wire:model="editName" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary" required>
+                                    @error('editName') <span class="text-error text-[11px] block mt-1">{{ $message }}</span> @enderror
+                                </div>
+                                <div>
+                                    <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Precio ($ ARS)</label>
+                                    <input type="number" wire:model="editPrice" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary" required>
+                                </div>
+                                <div>
+                                    <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Descripción</label>
+                                    <textarea wire:model="editDescription" rows="3" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary" required></textarea>
+                                </div>
+                                <div>
+                                    <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Descuento (%) - Opcional</label>
+                                    <input type="number" wire:model="editDiscount" min="0" max="100" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary">
+                                </div>
+                                <div class="flex gap-3 pt-2">
+                                    <button type="button" wire:click="cancelEdit" class="flex-1 py-2.5 border border-outline-variant rounded-full text-[12px] font-bold text-on-surface-variant">Cancelar</button>
+                                    <button type="submit" class="flex-1 py-2.5 bg-primary text-white rounded-full text-[12px] font-bold shadow-md">Guardar</button>
+                                </div>
+                            </form>
+                        @else
+                            <h3 class="text-[17px] font-bold font-headline mb-6 flex items-center gap-2 text-on-surface">
+                                <span class="material-symbols-outlined text-[20px]">add_circle</span> Añadir Nuevo
+                            </h3>
+
+                            <!-- Botón de carga rápida PDF -->
+                            @if(isset($iaDocumentationEnabled) && $iaDocumentationEnabled)
+                            <div class="mb-6 p-4 rounded-xl border-2 border-dashed border-[#4a7c59]/30 bg-[#4a7c59]/5 flex flex-col items-center justify-center gap-1.5 text-center transition-colors hover:bg-[#4a7c59]/10 cursor-pointer" onclick="alert('Función de extracción de PDF en desarrollo')">
+                                <span class="material-symbols-outlined text-primary text-[28px]">picture_as_pdf</span>
+                                <span class="text-[13px] font-bold text-primary font-headline">Cargar documentación</span>
+                                <span class="text-[11px] text-on-surface-variant font-body px-2">Sube un PDF para autocompletar rápidamente.</span>
+                            </div>
+                            @endif
+
+                            <form wire:submit.prevent="addProduct" class="space-y-4">
+                                <div>
+                                    <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Nombre</label>
+                                    <input type="text" wire:model="newName" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary" required>
+                                    @error('newName') <span class="text-error text-[11px] block mt-1">{{ $message }}</span> @enderror
+                                </div>
+                                <div>
+                                    <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Precio ($ ARS)</label>
+                                    <input type="number" wire:model="newPrice" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary" required>
+                                </div>
+                                <div>
+                                    <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Descripción</label>
+                                    <textarea wire:model="newDescription" rows="3" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary" required></textarea>
+                                </div>
+                                <div>
+                                    <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Descuento (%) - Opcional</label>
+                                    <input type="number" wire:model="newDiscount" min="0" max="100" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary">
+                                </div>
+                                
+                                <div>
+                                    <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Foto del Producto</label>
+                                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-outline-variant/30 border-dashed rounded-xl bg-[#f4f2ec] relative">
+                                        <div class="space-y-1 text-center">
+                                            @if ($newImage)
+                                                <img src="{{ $newImage->temporaryUrl() }}" class="mx-auto h-24 w-24 object-cover rounded-md mb-2">
+                                            @else
+                                                <span class="material-symbols-outlined text-outline-variant/50 text-[32px]">image</span>
+                                            @endif
+                                            <div class="flex text-[12px] text-on-surface-variant justify-center">
+                                                <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-bold text-primary hover:text-primary/80 focus-within:outline-none px-2 py-0.5 border border-outline-variant/20 shadow-sm">
+                                                    <span>Subir imagen</span>
+                                                    <input id="file-upload" type="file" wire:model="newImage" class="sr-only" accept="image/*">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @error('newImage') <span class="text-error text-[11px] block mt-1">{{ $message }}</span> @enderror
+                                </div>
+
+                                <button type="submit" class="w-full mt-2 py-2.5 bg-primary text-white rounded-full text-[13px] font-bold shadow-md">Crear Producto</button>
+                            </form>
+                        @endif
+                    </div>
+
+                    <!-- Right: Products List -->
+                    <div class="lg:col-span-8 bg-white rounded-[20px] p-6 shadow-[0_2px_15px_rgba(46,50,48,0.04)]">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-[17px] font-bold font-headline text-on-surface tracking-tight">Perfumes en Catálogo</h3>
+                            <div class="relative w-56">
+                                <span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant/50 text-[16px]">search</span>
+                                <input type="text" wire:model.live="searchProduct" placeholder="Buscar perfume..." class="w-full pl-9 pr-3 py-1.5 border border-outline-variant/20 bg-[#f4f2ec] rounded-lg text-[12px] font-body focus:outline-none focus:border-primary">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            @forelse($this->products as $p)
+                                <div class="bg-white border border-outline-variant/20 rounded-[12px] p-4 flex justify-between items-center shadow-sm">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-lg bg-[#f4f2ec] border border-outline-variant/10 flex items-center justify-center overflow-hidden">
+                                            @if($p->image)
+                                                <img src="{{ str_contains($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}" class="w-full h-full object-cover">
+                                            @else
+                                                <span class="material-symbols-outlined text-outline-variant text-[20px]">inventory_2</span>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-[14px] font-headline text-on-surface">{{ $p->name }}</h4>
+                                            <p class="text-[11px] text-on-surface-variant max-w-sm truncate">{{ $p->description }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-6">
+                                        <!-- Cuadro de Descuento Rápido -->
+                                        <div class="flex items-center gap-1.5 bg-[#f4f2ec] px-2 py-1.5 rounded-md border border-outline-variant/20" x-data="{ discountVal: {{ $p->discount ?? 0 }}, applying: false }">
+                                            <span class="text-[10px] font-bold text-on-surface-variant uppercase">Descuento:</span>
+                                            <input type="number" min="0" max="100" x-model="discountVal" 
+                                                   class="w-10 px-0.5 text-center border-b border-outline-variant/30 text-[12px] font-bold text-primary focus:border-primary focus:outline-none bg-transparent">
+                                            <span class="text-[10px] font-bold text-on-surface-variant">%</span>
+                                            <button type="button" 
+                                                    x-on:click="applying = true; $wire.updateProductDiscount({{ $p->id }}, discountVal).then(() => { setTimeout(() => applying = false, 1500) })" 
+                                                    x-text="applying ? '¡Aplicado!' : 'Aplicar'"
+                                                    :class="applying ? 'bg-primary hover:bg-primary/90 scale-105' : 'bg-error hover:bg-red-700'"
+                                                    class="ml-1 px-2 py-0.5 text-white text-[9px] font-bold rounded transition-all uppercase shadow-sm w-[55px]">
+                                                Aplicar
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="flex items-center gap-2 text-right">
+                                            @if($p->discount > 0)
+                                                <span class="bg-[#dcc48e]/20 text-[#8a6e30] px-2 py-0.5 rounded text-[11px] font-bold">{{ $p->discount }}% OFF</span>
+                                            @endif
+                                            <span class="text-[15px] font-bold text-primary">${{ number_format($p->price, 0, ',', '.') }}</span>
+                                        </div>
+                                        <button wire:click="startEdit({{ $p->id }})" class="px-3 py-1.5 border border-outline-variant rounded-md text-[11px] font-bold text-on-surface hover:bg-[#f4f2ec]">Editar</button>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="py-12 text-center text-on-surface-variant font-bold text-[13px]">No hay productos.</div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Tab 3: Pedidos -->
+            @if($activeTab === 'orders')
+                <div class="bg-white rounded-[20px] p-8 shadow-[0_2px_15px_rgba(46,50,48,0.04)] animate-fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-[17px] font-bold font-headline text-on-surface tracking-tight">Registro de Pedidos</h3>
+                        <div class="flex bg-[#f4f2ec] p-1 rounded-lg border border-outline-variant/20 text-[11px] font-bold">
+                            <button wire:click="$set('filterOrderStatus', 'all')" class="px-3 py-1 rounded-md {{ $filterOrderStatus === 'all' ? 'bg-white shadow-sm text-on-surface' : 'text-on-surface-variant' }}">Todos</button>
+                            <button wire:click="$set('filterOrderStatus', 'Pendiente')" class="px-3 py-1 rounded-md {{ $filterOrderStatus === 'Pendiente' ? 'bg-white shadow-sm text-on-surface' : 'text-on-surface-variant' }}">Pendientes</button>
+                            <button wire:click="$set('filterOrderStatus', 'Pagado')" class="px-3 py-1 rounded-md {{ $filterOrderStatus === 'Pagado' ? 'bg-white shadow-sm text-on-surface' : 'text-on-surface-variant' }}">Pagados</button>
+                            <button wire:click="$set('filterOrderStatus', 'Enviado')" class="px-3 py-1 rounded-md {{ $filterOrderStatus === 'Enviado' ? 'bg-white shadow-sm text-on-surface' : 'text-on-surface-variant' }}">Enviados</button>
                         </div>
                     </div>
 
-                    <!-- Table -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="border-b border-outline-variant/20 text-xs text-on-surface-variant uppercase font-bold font-body">
-                                    <th class="py-3">Cliente</th>
-                                    <th class="py-3">Perfil Olfativo</th>
-                                    <th class="py-3 text-center">Semillas</th>
-                                    <th class="py-3 text-right">Total Compras</th>
+                                <tr class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest border-b border-outline-variant/10">
+                                    <th class="py-3 pb-3">Pedido ID</th>
+                                    <th class="py-3 pb-3">Cliente</th>
+                                    <th class="py-3 pb-3">Items</th>
+                                    <th class="py-3 pb-3">Total</th>
+                                    <th class="py-3 pb-3">Estado</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-outline-variant/10 text-xs font-body">
-                                @forelse($this->customers as $customer)
-                                    @php
-                                        $profile = $customer->id % 3 == 0 ? 'Amaderado' : ($customer->id % 2 == 0 ? 'Cítrico' : 'Floral');
-                                    @endphp
-                                    <tr class="hover:bg-surface-container-high/50 transition-colors">
-                                        <td class="py-4 flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
-                                                {{ substr($customer->name, 0, 1) }}
-                                            </div>
-                                            <div>
-                                                <p class="font-bold text-on-surface">{{ $customer->name }}</p>
-                                                <p class="text-on-surface-variant text-[11px]">{{ $customer->email }}</p>
-                                            </div>
-                                        </td>
+                            <tbody class="text-[13px] font-body">
+                                @forelse($this->orders as $o)
+                                    <tr class="hover:bg-[#f4f2ec]/50 transition-colors border-b border-outline-variant/5 last:border-0">
+                                        <td class="py-4 font-bold text-on-surface">#{{ $o->order_number }}</td>
+                                        <td class="py-4 text-on-surface">{{ $o->user ? $o->user->name : 'Invitado' }}</td>
+                                        <td class="py-4 text-on-surface-variant text-[12px]">{{ Str::limit($o->items->pluck('product_name')->join(', '), 30) }}</td>
+                                        <td class="py-4 font-bold text-primary">${{ number_format($o->total, 0, ',', '.') }}</td>
                                         <td class="py-4">
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold {{ $profile === 'Amaderado' ? 'bg-secondary-container text-on-secondary-container' : ($profile === 'Cítrico' ? 'bg-primary-container text-on-primary-container' : 'bg-surface-container-high text-on-surface-variant') }}">
-                                                <span class="material-symbols-outlined text-[12px]">spa</span>
-                                                {{ $profile }}
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold {{ $o->status === 'Enviado' ? 'bg-[#1b2b20]/10 text-[#1b2b20]' : ($o->status === 'Pagado' ? 'bg-[#4a7c59]/10 text-[#4a7c59]' : 'bg-error/10 text-error') }}">
+                                                {{ $o->status }}
                                             </span>
-                                        </td>
-                                        <td class="py-4 text-center font-bold text-primary">
-                                            {{ $customer->orders_count * 10 }}
-                                        </td>
-                                        <td class="py-4 text-right">
-                                            <p class="font-bold text-on-surface">${{ number_format($customer->orders_sum_total ?? 0, 0, ',', '.') }}</p>
-                                            <p class="text-on-surface-variant text-[10px]">{{ $customer->orders_count }} pedidos</p>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="py-6 text-center text-on-surface-variant">No se encontraron clientes matching.</td>
+                                        <td colspan="5" class="py-8 text-center text-on-surface-variant text-[13px]">No hay pedidos con este filtro.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
-        </div>
-    @endif
-
-    <!-- Tab 2: Catálogo de Productos -->
-    @if($activeTab === 'products')
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
-            <!-- Product Alert Feedback -->
-            @if (session()->has('product_success'))
-                <div class="lg:col-span-12 p-4 bg-primary/10 text-primary rounded-xl border border-primary/20 flex items-start gap-3 shadow-sm mb-2 font-body">
-                    <span class="material-symbols-outlined mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                    <div>
-                        <h4 class="font-bold text-sm">Operación Explicita</h4>
-                        <p class="text-xs">{{ session('product_success') }}</p>
-                    </div>
-                </div>
             @endif
 
-            <!-- Left: Add/Edit Product Panel -->
-            <div class="lg:col-span-4 bg-surface-container-low border border-outline-variant/20 rounded-2xl p-8 h-fit">
-                @if($editingProductId)
-                    <!-- Edit Mode -->
-                    <h3 class="text-lg font-bold font-headline mb-6 flex items-center gap-2 text-primary">
-                        <span class="material-symbols-outlined">edit</span>
-                        Editar Producto
-                    </h3>
-                    <form wire:submit.prevent="saveEdit" class="space-y-4 font-body">
-                        <div>
-                            <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Nombre del Perfume</label>
-                            <input type="text" wire:model="editName" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary">
-                            @error('editName') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Precio ($ ARS)</label>
-                            <input type="number" wire:model="editPrice" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary">
-                            @error('editPrice') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Descripción</label>
-                            <textarea wire:model="editDescription" rows="3" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary"></textarea>
-                            @error('editDescription') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        
-                        <!-- Olfactory profile ratios -->
-                        <div class="border-t border-outline-variant/20 pt-4 space-y-3">
-                            <span class="text-xs font-bold text-on-surface-variant block mb-1">Afinidades Olfativas (%)</span>
-                            <div>
-                                <div class="flex justify-between text-[11px] mb-1">
-                                    <span class="font-bold text-primary">Amaderado</span>
-                                    <span>{{ $editWood }}%</span>
-                                </div>
-                                <input type="range" min="0" max="100" wire:model="editWood" class="w-full accent-primary">
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-[11px] mb-1">
-                                    <span class="font-bold text-tertiary">Cítrico</span>
-                                    <span>{{ $editCitrus }}%</span>
-                                </div>
-                                <input type="range" min="0" max="100" wire:model="editCitrus" class="w-full accent-tertiary">
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-[11px] mb-1">
-                                    <span class="font-bold text-tertiary-fixed-dim">Floral</span>
-                                    <span>{{ $editFloral }}%</span>
-                                </div>
-                                <input type="range" min="0" max="100" wire:model="editFloral" class="w-full accent-tertiary-fixed-dim">
-                            </div>
-                        </div>
+            <!-- Tab 4: Promociones -->
+            @if($activeTab === 'promotions')
+                <div class="bg-white rounded-[20px] p-8 shadow-[0_2px_15px_rgba(46,50,48,0.04)] animate-fade-in text-center py-16">
+                    <span class="material-symbols-outlined text-[48px] text-[#4a7c59] mb-4">sell</span>
+                    <h3 class="text-2xl font-bold font-headline text-on-surface mb-2">Gestión de Promociones</h3>
+                    <p class="text-on-surface-variant text-[13px] font-body mb-8 max-w-md mx-auto">Administra los descuentos y el programa de fidelidad para tus clientes más leales.</p>
+                    
+                    <button wire:click="toggleClubCologne" class="inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold shadow-md transition-all {{ $clubCologneEnabled ? 'bg-[#4a7c59] hover:bg-[#3d6649] text-white' : 'bg-gray-200 text-gray-500 hover:bg-gray-300' }}">
+                        <span class="material-symbols-outlined text-[20px]">{{ $clubCologneEnabled ? 'verified' : 'block' }}</span>
+                        {{ $clubCologneEnabled ? 'Club de Cologne (Activo)' : 'Club de Cologne (Inactivo)' }}
+                    </button>
 
-                        <div class="flex gap-3 pt-4 border-t border-outline-variant/20">
-                            <button type="button" wire:click="cancelEdit" class="flex-1 px-4 py-2.5 border border-outline-variant rounded-full text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors">Cancelar</button>
-                            <button type="submit" class="flex-1 px-4 py-2.5 bg-primary text-on-primary rounded-full text-xs font-bold hover:shadow-md transition-all">Guardar</button>
+                    @if(session()->has('message'))
+                        <div class="mt-4 text-sm font-bold {{ $clubCologneEnabled ? 'text-[#4a7c59]' : 'text-gray-500' }}">
+                            {{ session('message') }}
                         </div>
-                    </form>
-                @else
-                    <!-- Create Mode -->
-                    <h3 class="text-lg font-bold font-headline mb-6 flex items-center gap-2">
-                        <span class="material-symbols-outlined">add_circle</span>
-                        Añadir Nuevo Perfume
-                    </h3>
-
-                    <!-- Botón de carga rápida PDF -->
-                    @if($iaDocumentationEnabled)
-                    <div class="mb-6 p-4 rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 flex flex-col items-center justify-center gap-1.5 text-center transition-colors hover:bg-primary/10 cursor-pointer" onclick="alert('Función de extracción de PDF en desarrollo')">
-                        <span class="material-symbols-outlined text-primary text-[28px]">picture_as_pdf</span>
-                        <span class="text-sm font-bold text-primary font-headline">Cargar documentación</span>
-                        <span class="text-xs text-on-surface-variant font-body px-2">Sube un PDF para autocompletar rápidamente.</span>
-                    </div>
                     @endif
-
-                    <form wire:submit.prevent="addProduct" class="space-y-4 font-body">
-                        <div>
-                            <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Nombre</label>
-                            <input type="text" wire:model="newName" placeholder="Ej: Oud Mystique" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary">
-                            @error('newName') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Precio ($ ARS)</label>
-                            <input type="number" wire:model="newPrice" placeholder="Ej: 38000" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary">
-                            @error('newPrice') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Familia Predominante</label>
-                            <select wire:model="newFamily" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary">
-                                <option value="Amaderado">Amaderado</option>
-                                <option value="Cítrico">Cítrico</option>
-                                <option value="Floral">Floral</option>
-                                <option value="Oriental">Oriental</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Descripción</label>
-                            <textarea wire:model="newDescription" placeholder="Detalles de acordes y esencias..." rows="3" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary"></textarea>
-                            @error('newDescription') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
-                        </div>
-
-                        <!-- Olfactory profile ratios -->
-                        <div class="border-t border-outline-variant/20 pt-4 space-y-3">
-                            <span class="text-xs font-bold text-on-surface-variant block mb-1">Afinidades Olfativas (%)</span>
-                            <div>
-                                <div class="flex justify-between text-[11px] mb-1">
-                                    <span class="font-bold text-primary">Amaderado</span>
-                                    <span>{{ $newWood }}%</span>
-                                </div>
-                                <input type="range" min="0" max="100" wire:model="newWood" class="w-full accent-primary">
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-[11px] mb-1">
-                                    <span class="font-bold text-tertiary">Cítrico</span>
-                                    <span>{{ $newCitrus }}%</span>
-                                </div>
-                                <input type="range" min="0" max="100" wire:model="newCitrus" class="w-full accent-tertiary">
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-[11px] mb-1">
-                                    <span class="font-bold text-tertiary-fixed-dim">Floral</span>
-                                    <span>{{ $newFloral }}%</span>
-                                </div>
-                                <input type="range" min="0" max="100" wire:model="newFloral" class="w-full accent-tertiary-fixed-dim">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full mt-4 py-3 bg-primary text-on-primary rounded-full text-xs font-bold hover:shadow-md transition-all">Crear Producto</button>
-                    </form>
-                @endif
-            </div>
-
-            <!-- Right: Products List -->
-            <div class="lg:col-span-8 bg-surface-container-low border border-outline-variant/20 rounded-2xl p-8">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                    <div>
-                        <h3 class="text-lg font-bold font-headline">Perfumes en Catálogo</h3>
-                        <p class="text-xs text-on-surface-variant font-body">Ajusta el precio, stock y afinidades de cada decant.</p>
-                    </div>
-                    <!-- Search Bar -->
-                    <div class="relative w-full md:w-64">
-                        <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm">search</span>
-                        <input type="text" wire:model.live="searchProduct" placeholder="Buscar perfume..." class="w-full pl-9 pr-4 py-2 border border-outline-variant/30 bg-surface rounded-full text-xs font-body focus:outline-none focus:border-primary">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 gap-4">
-                    @forelse($this->products as $p)
-                        <div class="bg-surface border border-outline-variant/20 rounded-xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-md transition-all">
-                            <div class="flex items-center gap-4">
-                                <img src="{{ str_contains($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}" class="w-16 h-16 object-cover rounded-lg bg-surface-container border border-outline-variant/10">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <h4 class="font-bold font-headline text-on-surface">{{ $p->name }}</h4>
-                                        <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider {{ $p->category ? $p->category->color_class : 'bg-surface-container-high text-on-surface-variant' }}">{{ $p->category ? $p->category->name : 'N/A' }}</span>
-                                    </div>
-                                    <p class="text-xs text-on-surface-variant font-body max-w-md mt-1 leading-relaxed">{{ Str::limit($p->description, 100) }}</p>
-                                    <div class="flex items-center gap-4 mt-2 text-[10px] font-bold text-on-surface-variant font-body">
-                                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-[#4a7c59]"></div> Madera: {{ $p->wood ?? 0 }}%</span>
-                                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-[#705c30]"></div> Cítrico: {{ $p->citrus ?? 0 }}%</span>
-                                        <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-[#dcc48e]"></div> Floral: {{ $p->floral ?? 0 }}%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex md:flex-col items-end gap-3 w-full md:w-auto border-t md:border-t-0 border-outline-variant/15 pt-3 md:pt-0">
-                                <div class="flex justify-between md:justify-end items-center gap-4 w-full md:w-auto">
-                                    <span class="text-base font-display font-bold text-primary">${{ number_format($p->price, 0, ',', '.') }}</span>
-                                    
-                                    <!-- Stock Toggle Switch -->
-                                    <button wire:click="toggleStock({{ $p->id }})" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border transition-all {{ $p->stock > 0 ? 'border-primary text-primary hover:bg-primary/5' : 'border-error text-error hover:bg-error/5' }}">
-                                        <span class="material-symbols-outlined text-[12px]">{{ $p->stock > 0 ? 'check' : 'close' }}</span>
-                                        {{ $p->stock > 0 ? 'En Stock' : 'Sin Stock' }}
-                                    </button>
-                                </div>
-                                <div class="flex gap-2 w-full md:w-auto">
-                                    <button wire:click="startEdit({{ $p->id }})" class="flex-1 md:flex-initial px-4 py-2 border border-outline-variant rounded-full text-[11px] font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors">Editar</button>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="py-12 text-center text-on-surface-variant font-body">No hay productos en el catálogo.</div>
-                    @endforelse
-                </div>
-            </div>
-        </div>
-    @endif
-
-    <!-- Tab 3: Pedidos -->
-    @if($activeTab === 'orders')
-        <div class="bg-surface-container-low border border-outline-variant/20 rounded-2xl p-8 animate-fade-in">
-            @if (session()->has('order_success'))
-                <div class="p-4 bg-primary/10 text-primary rounded-xl border border-primary/20 flex items-start gap-3 shadow-sm mb-6 font-body">
-                    <span class="material-symbols-outlined mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                    <div>
-                        <h4 class="font-bold text-sm">Acción Exitosa</h4>
-                        <p class="text-xs">{{ session('order_success') }}</p>
-                    </div>
                 </div>
             @endif
 
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                <div>
-                    <h3 class="text-lg font-bold font-headline">Registro de Pedidos</h3>
-                    <p class="text-xs text-on-surface-variant font-body">Control de envíos y estado de cobros de Mercado Pago.</p>
-                </div>
-                <!-- Status Filter -->
-                <div class="flex bg-surface p-1 rounded-full border border-outline-variant/30 text-xs font-bold font-body">
-                    <button wire:click="$set('filterOrderStatus', 'all')" class="px-4 py-1.5 rounded-full {{ $filterOrderStatus === 'all' ? 'bg-primary text-on-primary' : 'text-on-surface-variant' }}">Todos</button>
-                    <button wire:click="$set('filterOrderStatus', 'Pendiente')" class="px-4 py-1.5 rounded-full {{ $filterOrderStatus === 'Pendiente' ? 'bg-primary text-on-primary' : 'text-on-surface-variant' }}">Pendientes</button>
-                    <button wire:click="$set('filterOrderStatus', 'Pagado')" class="px-4 py-1.5 rounded-full {{ $filterOrderStatus === 'Pagado' ? 'bg-primary text-on-primary' : 'text-on-surface-variant' }}">Pagados</button>
-                    <button wire:click="$set('filterOrderStatus', 'Enviado')" class="px-4 py-1.5 rounded-full {{ $filterOrderStatus === 'Enviado' ? 'bg-primary text-on-primary' : 'text-on-surface-variant' }}">Enviados</button>
-                </div>
-            </div>
-
-            <!-- Table -->
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-outline-variant/20 text-xs text-on-surface-variant uppercase font-bold font-body">
-                            <th class="py-3">Fecha</th>
-                            <th class="py-3">Pedido ID</th>
-                            <th class="py-3">Cliente</th>
-                            <th class="py-3">Items</th>
-                            <th class="py-3">Total</th>
-                            <th class="py-3">Estado</th>
-                            <th class="py-3 text-right">Acciones Rápidas</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-outline-variant/10 text-xs font-body">
-                        @forelse($this->orders as $o)
-                            <tr class="hover:bg-surface-container-high/40 transition-colors">
-                                <td class="py-4 text-on-surface-variant">{{ $o->created_at->format('Y-m-d') }}</td>
-                                <td class="py-4 font-bold text-on-surface">{{ $o->order_number }}</td>
-                                <td class="py-4 font-bold text-on-surface">{{ $o->user ? $o->user->name : 'Invitado' }}</td>
-                                <td class="py-4 text-on-surface-variant">{{ $o->items->pluck('product_name')->join(', ') ?: 'Sin items' }}</td>
-                                <td class="py-4 font-bold text-primary">${{ number_format($o->total, 0, ',', '.') }}</td>
-                                <td class="py-4">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold {{ $o->status === 'Enviado' ? 'bg-secondary-container text-on-secondary-container' : ($o->status === 'Pagado' ? 'bg-primary-container text-on-primary-container' : 'bg-error-container text-on-error-container') }}">
-                                        <span class="w-1.5 h-1.5 rounded-full {{ $o->status === 'Enviado' ? 'bg-primary' : ($o->status === 'Pagado' ? 'bg-tertiary' : 'bg-error') }}"></span>
-                                        {{ $o->status }}
-                                    </span>
-                                </td>
-                                <td class="py-4 text-right flex justify-end gap-2">
-                                    @if($o->status === 'Pendiente')
-                                        <button wire:click="updateOrderStatus('{{ $o->id }}', 'Pagado')" class="px-3 py-1 bg-primary text-on-primary rounded-full text-[10px] font-bold hover:shadow transition-all">Marcar Pagado</button>
-                                    @elseif($o->status === 'Pagado')
-                                        <button wire:click="updateOrderStatus('{{ $o->id }}', 'Enviado')" class="px-3 py-1 bg-primary text-on-primary rounded-full text-[10px] font-bold hover:shadow transition-all">Marcar Enviado</button>
-                                    @else
-                                        <span class="text-on-surface-variant font-bold text-[10px]">Listo</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="py-6 text-center text-on-surface-variant">No se encontraron pedidos con este filtro.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
         </div>
-    @endif
+    </main>
 </div>
 
 <style>
@@ -495,5 +437,16 @@
     }
     .animate-fade-in {
         animation: fade-in 0.3s ease-out forwards;
+    }
+    /* Estilos del scroll para el panel derecho */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #d4ccbf;
+        border-radius: 10px;
     }
 </style>

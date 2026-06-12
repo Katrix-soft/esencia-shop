@@ -77,16 +77,16 @@
     <!-- Action Buttons -->
     @if($activeTab === 'modulos')
         <div class="flex flex-wrap gap-4">
-            <!-- Plan Semilla -->
-            <button wire:click="actionClicked('Plan Semilla')" class="flex items-center gap-2 px-5 py-2.5 rounded text-sm font-bold bg-[#fff8e1] text-[#ffb300] border border-[#ffecb3] hover:bg-[#ffecb3]/50 transition-colors">
+            <!-- Plan Toilette -->
+            <button wire:click="actionClicked('Plan Toilette')" class="flex items-center gap-2 px-5 py-2.5 rounded text-sm font-bold bg-[#fff8e1] text-[#ffb300] border border-[#ffecb3] hover:bg-[#ffecb3]/50 transition-colors">
                 <span class="material-symbols-outlined text-[18px]">inventory_2</span>
-                Plan Semilla
+                Plan Toilette
             </button>
             
-            <!-- Plan Flor -->
-            <button wire:click="actionClicked('Plan Flor')" class="flex items-center gap-2 px-5 py-2.5 rounded text-sm font-bold bg-[#fce4ec] text-[#e91e63] border border-[#f8bbd0] hover:bg-[#f8bbd0]/50 transition-colors">
+            <!-- Plan Parfum -->
+            <button wire:click="actionClicked('Plan Parfum')" class="flex items-center gap-2 px-5 py-2.5 rounded text-sm font-bold bg-[#fce4ec] text-[#e91e63] border border-[#f8bbd0] hover:bg-[#f8bbd0]/50 transition-colors">
                 <span class="material-symbols-outlined text-[18px]">local_florist</span>
-                Plan Flor
+                Plan Parfum
             </button>
             
             <!-- Plan Extracto -->
@@ -915,7 +915,7 @@
         </div>
     @endif
 
-    <!-- Modal Plan Semilla -->
+    <!-- Modal Plan Toilette -->
     @if($showSemillaPlanModal)
     <div class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm animate-fade-in p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 text-center relative">
@@ -923,7 +923,7 @@
                 <span class="text-[#00b0ff] text-[40px] font-bold font-serif italic">i</span>
             </div>
             
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Aplicar Plan Semilla?</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Aplicar Plan Toilette?</h2>
             
             <p class="text-[13px] text-gray-600 mb-8 leading-relaxed px-4">
                 Esto habilitará únicamente los módulos y métricas<br>
@@ -933,7 +933,7 @@
             
             <div class="flex items-center justify-center gap-3">
                 <button wire:click="applySemillaPlan" class="px-6 py-2.5 bg-[#f59e0b] hover:bg-[#d97706] text-white font-bold text-sm rounded transition-colors shadow-sm">
-                    Sí, aplicar Plan Semilla
+                    Sí, aplicar Plan Toilette
                 </button>
                 <button wire:click="$set('showSemillaPlanModal', false)" class="px-6 py-2.5 bg-[#636e72] hover:bg-[#2d3436] text-white font-bold text-sm rounded transition-colors shadow-sm">
                     Cancelar
@@ -943,7 +943,7 @@
     </div>
     @endif
 
-    <!-- Modal Plan Básico (Flor) -->
+    <!-- Modal Plan Parfum -->
     @if($showBasicPlanModal)
     <div class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm animate-fade-in p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 text-center relative">
@@ -951,7 +951,7 @@
                 <span class="text-[#00b0ff] text-[40px] font-bold font-serif italic">i</span>
             </div>
             
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Aplicar Plan Básico?</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Aplicar Plan Parfum?</h2>
             
             <p class="text-[13px] text-gray-600 mb-8 leading-relaxed px-4">
                 Esto habilitará únicamente los módulos y métricas<br>
@@ -961,7 +961,7 @@
             
             <div class="flex items-center justify-center gap-3">
                 <button wire:click="applyBasicPlan" class="px-6 py-2.5 bg-[#e67e22] hover:bg-[#d35400] text-white font-bold text-sm rounded transition-colors shadow-sm">
-                    Sí, aplicar Plan Básico
+                    Sí, aplicar Plan Parfum
                 </button>
                 <button wire:click="$set('showBasicPlanModal', false)" class="px-6 py-2.5 bg-[#636e72] hover:bg-[#2d3436] text-white font-bold text-sm rounded transition-colors shadow-sm">
                     Cancelar
@@ -971,7 +971,7 @@
     </div>
     @endif
 
-    <!-- Modal Plan Premium (Extracto) -->
+    <!-- Modal Plan Extracto -->
     @if($showPremiumPlanModal)
     <div class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm animate-fade-in p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 text-center relative">
@@ -979,7 +979,7 @@
                 <span class="material-symbols-outlined text-[#2ecc71] text-[40px] font-bold">check</span>
             </div>
             
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Aplicar Plan Premium?</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Aplicar Plan Extracto?</h2>
             
             <p class="text-[13px] text-gray-600 mb-8 leading-relaxed px-4">
                 Esto habilitará absolutamente todos los módulos y<br>
@@ -988,7 +988,7 @@
             
             <div class="flex items-center justify-center gap-3">
                 <button wire:click="applyPremiumPlan" class="px-6 py-2.5 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-bold text-sm rounded transition-colors shadow-sm">
-                    Sí, aplicar Plan Premium
+                    Sí, aplicar Plan Extracto
                 </button>
                 <button wire:click="$set('showPremiumPlanModal', false)" class="px-6 py-2.5 bg-[#636e72] hover:bg-[#2d3436] text-white font-bold text-sm rounded transition-colors shadow-sm">
                     Cancelar

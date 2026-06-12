@@ -25,7 +25,9 @@
         {{ $slot }}
     </main>
 
-    <livewire:assistant-widget />
+    @if(request()->routeIs('catalog', 'packs', 'perfil-olfativo'))
+        <livewire:assistant-widget />
+    @endif
     <livewire:footer />
 
     @livewireScripts

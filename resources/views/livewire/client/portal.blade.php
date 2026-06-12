@@ -16,10 +16,12 @@
 
                 <!-- Nav links -->
                 <nav class="space-y-1">
+                    @if(cache('club_cologne_enabled', true))
                     <button wire:click="switchSection('fidelity')" class="w-full text-left px-4 py-3 rounded-xl text-xs font-bold font-body transition-all flex items-center gap-3 {{ $activeSection === 'fidelity' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-primary hover:bg-secondary-container' }}">
                         <span class="material-symbols-outlined text-[18px]">verified</span>
-                        Club Semillas (Fidelidad)
+                        Club de Cologne (Fidelidad)
                     </button>
+                    @endif
                     <button wire:click="switchSection('profile_dna')" class="w-full text-left px-4 py-3 rounded-xl text-xs font-bold font-body transition-all flex items-center gap-3 {{ $activeSection === 'profile_dna' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-primary hover:bg-secondary-container' }}">
                         <span class="material-symbols-outlined text-[18px]">spa</span>
                         Mi ADN Olfativo (IA)
@@ -39,12 +41,12 @@
         <!-- Main Content Area -->
         <main class="lg:col-span-9">
             <!-- Section 1: Fidelity / Club Semillas -->
-            @if($activeSection === 'fidelity')
+            @if($activeSection === 'fidelity' && cache('club_cologne_enabled', true))
                 <div class="space-y-8 animate-fade-in">
                     <!-- Head -->
                     <div>
-                        <h1 class="text-3xl font-headline font-bold text-on-surface">Club Semillas</h1>
-                        <p class="text-on-surface-variant font-body mt-1 text-sm">Acumula semillas aromáticas con cada compra y desbloquea beneficios VIP.</p>
+                        <h1 class="text-3xl font-headline font-bold text-on-surface">Club de Cologne</h1>
+                        <p class="text-on-surface-variant font-body mt-1 text-sm">Acumula puntos con cada compra y desbloquea beneficios VIP.</p>
                     </div>
 
                     <!-- Card & Progress -->

@@ -41,7 +41,17 @@
             $currencySymbol = $currencyCode === 'EUR' ? '€' : '$';
         @endphp
         <div class="mt-auto pt-4 border-t border-surface-container-highest flex items-center justify-between">
-            <span class="font-headline font-bold text-lg text-primary">{{ $currencySymbol }}{{ number_format(($product->price ?? 0) * 1000, 0, ',', '.') }} <span class="text-xs text-secondary ml-1">{{ $currencyCode }}</span></span>
+            @if($product->discount > 0)
+                <div class="flex flex-col">
+                    <span class="text-[11px] font-bold text-outline-variant line-through mb-0.5">{{ $currencySymbol }}{{ number_format($product->price ?? 0, 0, ',', '.') }}</span>
+                    <span class="font-headline font-bold text-lg text-primary flex items-center gap-1.5">
+                        {{ $currencySymbol }}{{ number_format($product->discounted_price ?? 0, 0, ',', '.') }}
+                        <span class="bg-[#dcc48e]/20 text-[#8a6e30] px-1 py-0.5 rounded text-[9px] font-bold uppercase">{{ $product->discount }}% OFF</span>
+                    </span>
+                </div>
+            @else
+                <span class="font-headline font-bold text-lg text-primary">{{ $currencySymbol }}{{ number_format($product->price ?? 0, 0, ',', '.') }} <span class="text-xs text-secondary ml-1">{{ $currencyCode }}</span></span>
+            @endif
             <button wire:click="addToCart" class="bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-xl text-sm font-bold transition-colors">
                 Añadir al carrito
             </button>

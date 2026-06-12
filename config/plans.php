@@ -2,8 +2,8 @@
 
 return [
     [
-        "id" => "semilla",
-        "name" => "Plan Semilla",
+        "id" => "toilette",
+        "name" => "Plan Toilette",
         "price" => 11900,
         "currency" => "ARS",
         "recommended" => false,
@@ -16,13 +16,13 @@ return [
         ]
     ],
     [
-        "id" => "flor",
-        "name" => "Plan Flor",
+        "id" => "parfum",
+        "name" => "Plan Parfum",
         "price" => 24900,
         "currency" => "ARS",
         "recommended" => true,
         "features" => [
-            "Todo de Semilla",
+            "Todo de Toilette",
             "CRM de clientes",
             "Estadísticas de ventas",
             "Campañas por email",
