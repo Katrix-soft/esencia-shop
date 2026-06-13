@@ -15,7 +15,8 @@ class Product extends Model implements StockableProduct
         'wood', 'citrus', 'floral', 'stock',
         'fragella_id', 'brand', 'year', 'rating', 'popularity',
         'gender', 'longevity', 'sillage', 'general_notes',
-        'main_accords', 'main_accords_percentage', 'notes'
+        'main_accords', 'main_accords_percentage', 'notes',
+        'points_multiplier', 'is_club_exclusive'
     ];
 
     protected function casts(): array
@@ -25,6 +26,8 @@ class Product extends Model implements StockableProduct
             'main_accords' => 'array',
             'main_accords_percentage' => 'array',
             'notes' => 'array',
+            'points_multiplier' => 'decimal:2',
+            'is_club_exclusive' => 'boolean',
         ];
     }
 

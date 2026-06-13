@@ -28,6 +28,10 @@
                 <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'promotions' ? 'font-variation-settings: \'FILL\' 1' : '' }}">sell</span>
                 <span class="text-[13px]">Promociones</span>
             </button>
+            <button wire:click="switchTab('packs')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all {{ $activeTab === 'packs' ? 'bg-[#4a7c59] text-white font-bold shadow-md' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
+                <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'packs' ? 'font-variation-settings: \'FILL\' 1' : '' }}">redeem</span>
+                <span class="text-[13px]">Packs & Colecciones</span>
+            </button>
         </nav>
 
         <div class="p-6 border-t border-white/10 mt-auto">
@@ -46,13 +50,27 @@
     <main class="flex-1 flex flex-col min-w-0">
         <!-- Topbar -->
         <header class="bg-[#f4f2ec] py-6 px-8 flex justify-between items-center z-10">
-            <h1 class="text-2xl font-headline font-bold text-on-surface tracking-tight flex items-center gap-2">
-                @if($activeTab === 'crm') Dashboard General
-                @elseif($activeTab === 'products') Gestión de Inventario
-                @elseif($activeTab === 'orders') Estado de Pedidos
-                @elseif($activeTab === 'promotions') Promociones y Fidelidad
+            <div class="flex items-center gap-4">
+                <h1 class="text-2xl font-headline font-bold text-on-surface tracking-tight flex items-center gap-2">
+                    @if($activeTab === 'crm') Dashboard General
+                    @elseif($activeTab === 'products') Gestión de Inventario
+                    @elseif($activeTab === 'orders') Estado de Pedidos
+                    @elseif($activeTab === 'promotions') Promociones y Fidelidad
+                    @elseif($activeTab === 'packs') Packs & Colecciones
+                    @endif
+                </h1>
+                
+                @if($activeTab === 'packs')
+                <div class="flex items-center gap-2 ml-4 bg-white px-3 py-1.5 rounded-full shadow-sm border border-outline-variant/10 cursor-pointer" wire:click="togglePacksSection">
+                    <div class="relative inline-flex items-center h-5 rounded-full w-9 transition-colors focus:outline-none {{ $packsSectionEnabled ? 'bg-[#4a7c59]' : 'bg-outline-variant/40' }}">
+                        <span class="inline-block w-3.5 h-3.5 transform bg-white rounded-full transition-transform shadow-sm {{ $packsSectionEnabled ? 'translate-x-4.5 translate-x-[18px]' : 'translate-x-1' }}"></span>
+                    </div>
+                    <span class="text-[10px] font-bold {{ $packsSectionEnabled ? 'text-[#4a7c59]' : 'text-on-surface-variant' }} uppercase tracking-widest select-none">
+                        {{ $packsSectionEnabled ? 'Encendido' : 'Apagado' }}
+                    </span>
+                </div>
                 @endif
-            </h1>
+            </div>
             
             <div class="flex items-center gap-6">
                 <!-- Search -->
@@ -423,6 +441,118 @@
                             {{ session('message') }}
                         </div>
                     @endif
+                </div>
+            @endif
+
+            <!-- Tab 5: Packs y Colecciones -->
+            @if($activeTab === 'packs')
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
+                    <!-- Feedback Alert -->
+                    @if (session()->has('pack_success'))
+                        <div class="lg:col-span-12 p-4 bg-[#4a7c59]/10 text-[#4a7c59] rounded-xl border border-[#4a7c59]/20 flex items-start gap-3 shadow-sm font-body">
+                            <span class="material-symbols-outlined mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <div>
+                                <h4 class="font-bold text-[13px]">Operación Exitosa</h4>
+                                <p class="text-[12px]">{{ session('pack_success') }}</p>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Left: Add Pack Panel -->
+                    <div class="lg:col-span-4 bg-white rounded-[20px] p-6 shadow-[0_2px_15px_rgba(46,50,48,0.04)] h-fit">
+                        <h3 class="text-[17px] font-bold font-headline mb-6 flex items-center gap-2 text-on-surface">
+                            <span class="material-symbols-outlined text-[20px]">library_add</span> Crear Pack
+                        </h3>
+
+                        <form wire:submit.prevent="createPack" class="space-y-4">
+                            <div>
+                                <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Nombre</label>
+                                <input type="text" wire:model="newPackName" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary" required>
+                                @error('newPackName') <span class="text-error text-[11px] block mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Precio ($ ARS)</label>
+                                <input type="number" wire:model="newPackPrice" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary" required>
+                                @error('newPackPrice') <span class="text-error text-[11px] block mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Descripción</label>
+                                <textarea wire:model="newPackDescription" rows="3" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary" required></textarea>
+                                @error('newPackDescription') <span class="text-error text-[11px] block mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Descuento (%) - Opcional</label>
+                                <input type="number" wire:model="newPackDiscount" min="0" max="100" class="w-full px-4 py-2 border border-outline-variant/30 bg-[#f4f2ec] rounded-xl text-[13px] focus:outline-none focus:border-primary">
+                            </div>
+                            
+                            <div>
+                                <label class="text-[12px] font-bold text-on-surface-variant mb-1 block">Foto del Pack</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-outline-variant/30 border-dashed rounded-xl bg-[#f4f2ec] relative">
+                                    <div class="space-y-1 text-center">
+                                        @if ($newPackImage)
+                                            <img src="{{ $newPackImage->temporaryUrl() }}" class="mx-auto h-24 w-24 object-cover rounded-md mb-2">
+                                        @else
+                                            <span class="material-symbols-outlined text-outline-variant/50 text-[32px]">image</span>
+                                        @endif
+                                        <div class="flex text-[12px] text-on-surface-variant justify-center">
+                                            <label for="pack-file-upload" class="relative cursor-pointer bg-white rounded-md font-bold text-primary hover:text-primary/80 focus-within:outline-none px-2 py-0.5 border border-outline-variant/20 shadow-sm">
+                                                <span>Subir imagen</span>
+                                                <input id="pack-file-upload" type="file" wire:model="newPackImage" class="sr-only" accept="image/*">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                @error('newPackImage') <span class="text-error text-[11px] block mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            @error('selectedPackProducts')
+                                <div class="p-3 bg-error/10 text-error rounded-xl border border-error/20 text-[11px] font-bold mt-2">
+                                    <span class="material-symbols-outlined text-[14px] align-middle">error</span> {{ $message }}
+                                </div>
+                            @enderror
+
+                            <button type="submit" class="w-full mt-2 py-2.5 bg-[#4a7c59] text-white rounded-full text-[13px] font-bold shadow-md hover:bg-[#3d6649] transition-colors">Crear Pack</button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Products Catalog Selection -->
+                    <div class="lg:col-span-8 bg-white rounded-[20px] p-6 shadow-[0_2px_15px_rgba(46,50,48,0.04)]">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-[17px] font-bold font-headline text-on-surface tracking-tight">Catálogo de Productos</h3>
+                                <p class="text-[11px] text-on-surface-variant font-bold mt-1">Selecciona los productos que conformarán este pack</p>
+                            </div>
+                            <div class="bg-[#f4f2ec] px-3 py-1.5 rounded-lg border border-outline-variant/20 font-bold text-[12px] text-[#4a7c59]">
+                                Seleccionados: {{ count($selectedPackProducts) }}
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @forelse($this->products as $p)
+                                @php
+                                    $isSelected = in_array($p->id, $selectedPackProducts);
+                                @endphp
+                                <div wire:click="togglePackProduct({{ $p->id }})" class="cursor-pointer border {{ $isSelected ? 'border-[#4a7c59] bg-[#4a7c59]/5' : 'border-outline-variant/20 bg-white hover:bg-[#f4f2ec]' }} rounded-[12px] p-3 flex items-center gap-3 shadow-sm transition-all">
+                                    <div class="w-12 h-12 rounded-lg bg-[#f4f2ec] border border-outline-variant/10 flex items-center justify-center overflow-hidden shrink-0">
+                                        @if($p->image)
+                                            <img src="{{ str_contains($p->image, 'http') ? $p->image : asset('storage/'.$p->image) }}" class="w-full h-full object-cover">
+                                        @else
+                                            <span class="material-symbols-outlined text-outline-variant text-[20px]">inventory_2</span>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-bold text-[13px] font-headline text-on-surface truncate">{{ $p->name }}</h4>
+                                        <p class="text-[10px] text-on-surface-variant truncate">{{ $p->category ? $p->category->name : 'General' }}</p>
+                                    </div>
+                                    <div class="shrink-0 flex items-center justify-center w-6 h-6 rounded-full border {{ $isSelected ? 'bg-[#4a7c59] border-[#4a7c59] text-white' : 'border-outline-variant text-transparent' }}">
+                                        <span class="material-symbols-outlined text-[14px] font-bold" style="font-variation-settings: 'FILL' 1;">check</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="col-span-1 md:col-span-2 py-12 text-center text-on-surface-variant font-bold text-[13px]">No hay productos en el catálogo.</div>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
             @endif
 

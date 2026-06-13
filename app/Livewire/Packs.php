@@ -4,10 +4,17 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\Title;
+use App\Models\Pack;
 
 #[Title('Esencia - Packs & Colecciones')]
 class Packs extends Component
 {
+    public function mount()
+    {
+        if (!cache('packs_section_enabled', true)) {
+            return redirect()->route('catalog');
+        }
+    }
     public $packsData = [
         'discovery' => [
             'name' => 'Discovery Set',
@@ -31,8 +38,20 @@ class Packs extends Component
 
     public function addToCart($packId)
     {
-        if (!isset($this->packsData[$packId])) return;
-        $pack = $this->packsData[$packId];
+        if (str_starts_with($packId, 'pack_')) {
+            $dbId = str_replace('pack_', '', $packId);
+            $dbPack = Pack::find($dbId);
+            if (!$dbPack) return;
+            $pack = [
+                'name' => $dbPack->name,
+                'type' => 'Pack Exclusivo',
+                'price' => $dbPack->discounted_price,
+                'img' => $dbPack->image ? asset('storage/'.$dbPack->image) : '',
+            ];
+        } else {
+            if (!isset($this->packsData[$packId])) return;
+            $pack = $this->packsData[$packId];
+        }
         
         $cart = \Gloudemans\Shoppingcart\Facades\Cart::instance('default');
         
@@ -57,6 +76,9 @@ class Packs extends Component
 
     public function render()
     {
-        return view('livewire.packs');
+        $dbPacks = Pack::all();
+        return view('livewire.packs', [
+            'dbPacks' => $dbPacks
+        ]);
     }
 }

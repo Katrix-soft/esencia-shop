@@ -128,34 +128,54 @@
                 </div>
             @endif
 
-            <!-- Section 2: DNA / Mi ADN Olfativo -->
+            <!-- Section 2: DNA / Mi ADN Olfativo (Dashboard Estilo CRM) -->
             @if($activeSection === 'profile_dna')
-                <div class="space-y-8 animate-fade-in">
-                    <div>
-                        <h1 class="text-3xl font-headline font-bold text-on-surface">Mi Perfil Olfativo</h1>
-                        <p class="text-on-surface-variant font-body mt-1 text-sm">Tu mapa sensorial exclusivo calculado por nuestro motor de recomendación IA.</p>
+                <div class="space-y-6 animate-fade-in bg-[#fdfaf5] p-6 sm:p-8 rounded-3xl shadow-sm border border-[#e8dfce]">
+                    
+                    <!-- Customer Header Info -->
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-6 border-b border-[#e8dfce] pb-6 mb-2">
+                        <div class="flex gap-5 items-center">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=2f5a43&color=fff&size=128" alt="Profile" class="w-24 h-24 rounded-full object-cover shadow-sm border-2 border-white">
+                            <div>
+                                <h1 class="text-3xl font-headline font-bold text-[#2e3230] uppercase tracking-wide">{{ auth()->user()->name }}</h1>
+                                <div class="flex flex-wrap items-center gap-4 text-sm text-[#5f6360] font-body mt-2">
+                                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">mail</span> {{ auth()->user()->email }}</span>
+                                    @if(auth()->user()->location || auth()->user()->postal_code)
+                                        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">location_on</span> {{ auth()->user()->location }}{{ auth()->user()->postal_code ? ' (' . auth()->user()->postal_code . ')' : '' }}</span>
+                                    @endif
+                                    @if(auth()->user()->phone)
+                                        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">call</span> {{ auth()->user()->phone }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     @php
                         $dna = $this->olfactiveProfile;
+                        $timeline = $this->timeline;
+                        $ai = $this->aiRecommendation;
                     @endphp
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-                        <!-- DNA Breakdown -->
-                        <div class="md:col-span-5 bg-surface-container-low border border-outline-variant/20 rounded-2xl p-8 flex flex-col items-center justify-center">
-                            <h3 class="text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-6 w-full text-left">ADN Aromático</h3>
+                    
+                    <!-- 3 Column Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Col 1: Perfil Olfativo (Circle Chart) -->
+                        <div class="bg-white border border-[#e8dfce] rounded-2xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                            <h3 class="text-sm font-headline font-bold text-[#2e3230] mb-6">Perfil Olfativo (Preferencias)</h3>
                             
-                            <!-- Circle Chart Representation -->
-                            <div class="relative w-44 h-44 flex items-center justify-center mb-6">
+                            <!-- Circle Chart Representation (Kept as requested) -->
+                            <div class="relative w-40 h-40 mx-auto flex items-center justify-center mb-6">
                                 <svg class="w-full h-full -rotate-90" viewBox="0 0 42 42">
-                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#e8e8e8" stroke-width="4"></circle>
+                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#f0e6d2" stroke-width="4"></circle>
                                     
                                     <!-- Wood Segment -->
-                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#4a7c59" stroke-width="4" 
+                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#2f5a43" stroke-width="4" 
                                             stroke-dasharray="{{ $dna['wood'] }} {{ 100 - $dna['wood'] }}" 
                                             stroke-dashoffset="100"></circle>
                                     
                                     <!-- Citrus Segment -->
-                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#705c30" stroke-width="4" 
+                                    <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#8a6e30" stroke-width="4" 
                                             stroke-dasharray="{{ $dna['citrus'] }} {{ 100 - $dna['citrus'] }}" 
                                             stroke-dashoffset="{{ 100 - $dna['wood'] }}"></circle>
                                     
@@ -165,64 +185,80 @@
                                             stroke-dashoffset="{{ 100 - $dna['wood'] - $dna['citrus'] }}"></circle>
                                 </svg>
                                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                    <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wide">ADN</span>
-                                    <span class="text-2xl font-headline font-bold text-primary">{{ $dna['label'] }}</span>
+                                    <span class="text-xl font-headline font-bold text-[#2f5a43] text-center leading-tight px-4">{{ $dna['label'] }}</span>
                                 </div>
                             </div>
 
-                            <!-- Legend -->
-                            <div class="space-y-2 w-full text-xs font-body">
-                                <div class="flex justify-between items-center">
-                                    <span class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#4a7c59]"></div> Amaderados</span>
+                            <div class="space-y-3 w-full text-xs font-body mt-4">
+                                <div class="flex justify-between items-center bg-surface-container-lowest p-2 rounded-lg">
+                                    <span class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#2f5a43]"></div> Amaderados</span>
                                     <span class="font-bold">{{ $dna['wood'] }}%</span>
                                 </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#705c30]"></div> Cítricos</span>
+                                <div class="flex justify-between items-center bg-surface-container-lowest p-2 rounded-lg">
+                                    <span class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#8a6e30]"></div> Cítricos</span>
                                     <span class="font-bold">{{ $dna['citrus'] }}%</span>
                                 </div>
-                                <div class="flex justify-between items-center">
+                                <div class="flex justify-between items-center bg-surface-container-lowest p-2 rounded-lg">
                                     <span class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#dcc48e]"></div> Florales/Otros</span>
                                     <span class="font-bold">{{ $dna['floral'] }}%</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- DNA details and recommendations -->
-                        <div class="md:col-span-7 space-y-6">
-                            <div class="bg-surface-container-low border border-outline-variant/20 rounded-2xl p-8">
-                                <h3 class="text-lg font-bold font-headline mb-3 flex items-center gap-2 text-primary">
-                                    <span class="material-symbols-outlined">psychology</span>
-                                    Tu Diagnóstico Olfativo
-                                </h3>
-                                <p class="text-xs text-on-surface-variant font-body leading-relaxed">{{ $dna['description'] }}</p>
-                                
-                                <a href="{{ route('perfil-olfativo') }}" class="mt-6 inline-flex items-center gap-1.5 px-4 py-2 border border-primary text-primary rounded-full text-xs font-bold hover:bg-primary/5 transition-all">
-                                    <span class="material-symbols-outlined text-sm">refresh</span>
-                                    Volver a realizar el test
-                                </a>
-                            </div>
-
-                            <!-- Personalized Recommendations -->
-                            <div class="bg-surface-container-low border border-outline-variant/20 rounded-2xl p-8">
-                                <h3 class="text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-4">Decants Recomendados para Ti</h3>
-                                <div class="grid grid-cols-1 gap-3">
-                                    @forelse($this->recommendations as $rec)
-                                        <div class="bg-surface border border-outline-variant/15 p-4 rounded-xl flex justify-between items-center hover:shadow-sm transition-all">
-                                            <div class="flex items-center gap-3">
-                                                <img src="{{ $rec['image'] }}" class="w-10 h-10 object-cover rounded bg-surface-container">
-                                                <div>
-                                                    <h4 class="font-bold text-xs font-headline text-on-surface">{{ $rec['name'] }}</h4>
-                                                    <span class="text-[9px] font-bold uppercase tracking-wide text-primary">{{ $rec['family'] }}</span>
-                                                </div>
+                        <!-- Col 2: Historial de Compras (Timeline) -->
+                        <div class="bg-white border border-[#e8dfce] rounded-2xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                            <h3 class="text-sm font-headline font-bold text-[#2e3230] mb-6">Actividad Reciente (Timeline)</h3>
+                            <div class="relative border-l border-[#e8dfce] ml-3 space-y-8 pb-4">
+                                @foreach($timeline as $event)
+                                    <div class="relative pl-6">
+                                        <!-- Node -->
+                                        <div class="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full {{ $event['color'] }} border-2 border-white shadow-sm"></div>
+                                        <div class="flex justify-between items-start gap-2">
+                                            <div>
+                                                <span class="text-xs text-[#5f6360] font-body">{{ $event['date'] }}</span>
+                                                <h4 class="font-bold text-sm text-[#2e3230] font-headline mt-1">{{ $event['type'] }}</h4>
+                                                <p class="text-xs text-[#5f6360] mt-0.5">{{ $event['title'] }}</p>
                                             </div>
-                                            <a href="{{ route('catalog') }}" class="px-3 py-1.5 bg-primary/10 hover:bg-primary hover:text-white text-primary text-[10px] font-bold rounded-full transition-all">Ver Perfume</a>
+                                            @if($event['amount'])
+                                                <span class="font-bold text-sm text-[#2e3230]">{{ $event['amount'] }}</span>
+                                            @endif
                                         </div>
-                                    @empty
-                                        <div class="text-xs text-on-surface-variant font-body">Visita el catálogo para explorar todas las familias.</div>
-                                    @endforelse
-                                </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
+
+                        <!-- Col 3: Recomendación IA -->
+                        <div class="relative group">
+                            <!-- Glow Effect -->
+                            <div class="absolute inset-0 bg-[#2f5a43]/20 blur-xl rounded-2xl group-hover:bg-[#2f5a43]/30 transition-all duration-500"></div>
+                            
+                            <div class="bg-[#dcf5e3] border-2 border-[#81c784] rounded-2xl p-6 relative h-full flex flex-col items-center text-center shadow-[0_8px_30px_rgba(47,90,67,0.15)] z-10">
+                                <h3 class="text-sm font-headline font-bold text-[#1b3b2b] uppercase tracking-widest w-full text-left mb-6">Recomendación IA</h3>
+                                
+                                @if($ai)
+                                    <div class="w-32 h-32 mb-4 bg-white/50 rounded-xl p-2 shadow-sm border border-white/60">
+                                        <img src="{{ $ai['product']['image'] }}" alt="{{ $ai['product']['name'] }}" class="w-full h-full object-contain mix-blend-multiply drop-shadow-md">
+                                    </div>
+                                    
+                                    <h4 class="font-bold text-lg text-[#1b3b2b] font-headline">Sugiere: {{ $ai['product']['name'] }}</h4>
+                                    
+                                    <p class="text-xs text-[#2a5a3f] mt-3 font-body leading-relaxed max-w-[200px]">
+                                        {{ $ai['reason'] }}
+                                    </p>
+                                    
+                                    <p class="text-xs text-[#1b3b2b] mt-4 mb-6">Probabilidad de compra: <span class="font-bold">Alta</span></p>
+                                    
+                                    <a href="{{ route('catalog') }}" class="mt-auto w-full py-3 bg-[#2f5a43] text-white font-bold text-sm rounded-xl hover:bg-[#1b3b2b] transition-colors shadow-md flex items-center justify-center gap-2">
+                                        <span class="material-symbols-outlined text-sm">magic_button</span>
+                                        Crear Oferta
+                                    </a>
+                                @else
+                                    <p class="text-sm text-[#2a5a3f] mt-10 font-body">Visita nuestro catálogo para obtener recomendaciones personalizadas.</p>
+                                @endif
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             @endif
@@ -313,6 +349,21 @@
                                 <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Dirección de Email</label>
                                 <input type="email" wire:model="email" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary">
                                 @error('email') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Ubicación (Ciudad, País)</label>
+                                <input type="text" wire:model="location" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary" placeholder="Ej. Buenos Aires, Argentina">
+                                @error('location') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Teléfono Móvil</label>
+                                <input type="text" wire:model="phone" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary" placeholder="Ej. +54 9 11 1234 5678">
+                                @error('phone') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block">Código Postal</label>
+                                <input type="text" wire:model="postal_code" class="w-full px-4 py-2.5 border border-outline-variant/30 bg-surface rounded-xl text-sm focus:outline-none focus:border-primary" placeholder="Ej. 1414">
+                                @error('postal_code') <span class="text-error text-xs block mt-1">{{ $message }}</span> @enderror
                             </div>
 
                             <div class="pt-4 border-t border-outline-variant/20">

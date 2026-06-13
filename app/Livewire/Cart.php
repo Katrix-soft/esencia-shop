@@ -118,20 +118,74 @@ class Cart extends Component
         return round($this->subtotal / 100);
     }
 
-    public function addDiscoverySet()
+    public function getSuggestionProperty()
     {
-        \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->add(
-            3, // Or unique ID
-            'Discovery Set',
-            1,
-            32000,
-            [
-                'type' => 'Bosque Profundo', 
-                'size' => '3 x viales 2ml', 
-                'image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjaiTcbzPSfNSen_8KeCj9tg6snb-wsNFNsVOjUyihLc6tFrJr1zhdwjDNlZaNwS-o00FVl0ISAYTjni3cXfA2LADJrvJyJIP6ZQqrqtQ_vr5wiFqO792DJqbUWSfyzUE6S-wV6hT-KB1UUFu1IrD3vJ3rVQH2qxdfxhTFjq7orQaD-Uit0rCrpS-cLWt66ckUvsKy-Khnm_e_Npg8A3pyf6TkaUqGdsFQgeTWPSn3zVzdNw5eRQKhq_hLAkhW7oe-1xU7ZOGVqrA'
-            ]
-        );
+        $cartProductIds = collect($this->items)->filter(fn($i) => is_numeric($i['id']))->pluck('id')->toArray();
+        $cartPackIds = collect($this->items)->filter(fn($i) => str_starts_with((string)$i['id'], 'pack_'))->pluck('id')->map(fn($id) => str_replace('pack_', '', $id))->toArray();
+
+        // 1. Intentar sugerir un Pack que no esté en el carrito
+        $pack = \App\Models\Pack::whereNotIn('id', $cartPackIds)->inRandomOrder()->first();
+        if ($pack) {
+            $pack->is_pack_model = true;
+            return $pack;
+        }
+
+        // 2. Si no hay packs, sugerir el producto más popular que no esté en el carrito
+        $product = \App\Models\Product::whereNotIn('id', $cartProductIds)->orderByDesc('popularity')->first();
+        if ($product) {
+            $product->is_pack_model = false;
+            return $product;
+        }
+
+        return null;
     }
+
+    public function addSuggestion($id, $isPack)
+    {
+        if ($isPack) {
+            $pack = \App\Models\Pack::find($id);
+            if ($pack) {
+                \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->add(
+                    'pack_' . $pack->id,
+                    $pack->name,
+                    1,
+                    $pack->discounted_price,
+                    [
+                        'type' => 'Pack Exclusivo',
+                        'size' => 'Colección',
+                        'image' => $pack->image ? asset('storage/'.$pack->image) : ''
+                    ]
+                );
+            }
+        } else {
+            $product = \App\Models\Product::find($id);
+            if ($product && $product->stock > 0) {
+                \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->add(
+                    $product->id,
+                    $product->name,
+                    1,
+                    $product->discounted_price,
+                    [
+                        'type' => $product->category ? $product->category->name : 'Fragancia',
+                        'size' => '50ml',
+                        'image' => $product->image ? asset('storage/'.$product->image) : '',
+                        'original_price' => $product->price,
+                        'discount' => $product->discount
+                    ]
+                );
+            } elseif ($product) {
+                $this->dispatch('swal', [
+                    'icon' => 'error',
+                    'title' => 'Sin stock',
+                    'text' => 'El producto sugerido ya no tiene stock disponible.'
+                ]);
+                return;
+            }
+        }
+        
+        $this->dispatch('cart-updated');
+    }
+
 
     public function checkout()
     {

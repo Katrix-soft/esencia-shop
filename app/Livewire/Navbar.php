@@ -10,9 +10,10 @@ class Navbar extends Component
     public $searchQuery = '';
 
     #[On('cart-updated')]
+    #[On('packs-section-toggled')]
     public function refresh()
     {
-        // Re-renders the navbar when cart changes
+        // Re-renders the navbar when cart or global settings change
     }
 
     public function performSearch()

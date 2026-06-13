@@ -21,7 +21,11 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'location',
+        'postal_code',
         'password',
+        'club_points',
     ];
 
     /**
@@ -53,5 +57,13 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Get the point transactions for the user.
+     */
+    public function pointTransactions()
+    {
+        return $this->hasMany(PointTransaction::class);
     }
 }

@@ -55,22 +55,26 @@ class AssistantWidget extends Component
         }
 
         try {
-            // Llamada robusta a la API de Ollama
-            $response = Http::timeout(45)->post(env('OLLAMA_URL', 'http://localhost:11434') . '/api/chat', [
-                'model' => env('OLLAMA_MODEL', 'llama3'),
-                'messages' => $apiMessages,
-                'stream' => false,
-            ]);
+            // Llamada a la API de Groq (OpenAI compatible)
+            $response = Http::timeout(45)
+                ->withToken(env('GROQ_API_KEY'))
+                ->post('https://api.groq.com/openai/v1/chat/completions', [
+                    'model' => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
+                    'messages' => $apiMessages,
+                    'stream' => false,
+                ]);
 
             if ($response->successful()) {
-                $botMessage = $response->json('message.content');
+                // Formato OpenAI: choices[0].message.content
+                $botMessage = $response->json('choices.0.message.content');
+
                 if ($botMessage) {
                     $this->messages[] = ['role' => 'assistant', 'content' => $botMessage];
                 } else {
                     $this->messages[] = ['role' => 'assistant', 'content' => 'No pude procesar tu solicitud adecuadamente.'];
                 }
             } else {
-                // Maneja 401, 403, 404, 500 de la API sin mostrar HTML en la vista
+                // Maneja 401, 403, 404, 500
                 $this->messages[] = ['role' => 'assistant', 'content' => 'Estoy teniendo problemas técnicos para conectarme con mis servidores. Por favor, intenta de nuevo más tarde.'];
                 Log::error('Chatbot API Error: ' . $response->status() . ' - ' . $response->body());
             }

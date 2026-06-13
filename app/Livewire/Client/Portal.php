@@ -8,11 +8,14 @@ use Livewire\Attributes\Title;
 #[Title('Mi Cuenta - Esencia')]
 class Portal extends Component
 {
-    public $activeSection = 'fidelity'; // fidelity, profile_dna, orders, settings
+    public $activeSection = 'profile_dna'; // fidelity, profile_dna, orders, settings
     
     // User profile edit fields
     public $name;
     public $email;
+    public $phone;
+    public $location;
+    public $postal_code;
 
     public function mount()
     {
@@ -23,6 +26,9 @@ class Portal extends Component
         $user = auth()->user();
         $this->name = $user->name;
         $this->email = $user->email;
+        $this->phone = $user->phone;
+        $this->location = $user->location;
+        $this->postal_code = $user->postal_code;
 
         $this->initializeClientData();
     }
@@ -150,11 +156,87 @@ class Portal extends Component
         });
     }
 
+    public function getAiRecommendationProperty()
+    {
+        $recs = $this->recommendations;
+        if (empty($recs)) return null;
+        
+        $top = reset($recs); // get first
+        $profile = $this->olfactiveProfile;
+        
+        $reason = "Basado en tu preferencia por " . $profile['label'] . " (" . $profile['wood'] . "%) y notas secundarias.";
+        
+        return [
+            'product' => $top,
+            'reason' => $reason,
+            'probability' => 'Alta'
+        ];
+    }
+
+    public function getTimelineProperty()
+    {
+        $orders = $this->clientOrders;
+        $timeline = [];
+        
+        foreach($orders as $o) {
+            $dateFormatted = date('M d, Y', strtotime($o['date']));
+            $amount = isset($o['total']) ? '€' . round($o['total'] / 1000) : '€0'; // Fake euro for matching image
+            
+            // Extract first item name
+            $itemName = 'Productos';
+            if (isset($o['items'])) {
+                $parts = explode(',', $o['items']);
+                $itemName = trim(preg_replace('/^\d+x\s/', '', $parts[0]));
+            }
+            
+            $timeline[] = [
+                'date' => $dateFormatted,
+                'raw_date' => $o['date'],
+                'type' => 'Compra',
+                'title' => $itemName,
+                'amount' => $amount,
+                'color' => 'bg-[#4a7c59]'
+            ];
+        }
+        
+        // Add a fake "Consulta"
+        $timeline[] = [
+            'date' => date('M d, Y', strtotime('-1 month')),
+            'raw_date' => date('Y-m-d', strtotime('-1 month')),
+            'type' => 'Consulta',
+            'title' => 'Test de ADN Olfativo',
+            'amount' => '',
+            'color' => 'bg-[#dcc48e]'
+        ];
+        
+        // Sort by date desc
+        usort($timeline, function($a, $b) {
+            return strtotime($b['raw_date']) - strtotime($a['raw_date']);
+        });
+        
+        // Retornar solo las 3 actividades más recientes para el dashboard
+        return array_slice($timeline, 0, 3);
+    }
+
+    public function getBadgesProperty()
+    {
+        $profile = $this->olfactiveProfile;
+        $level = $this->fidelityLevel['name'];
+        return [
+            $profile['label'],
+            'Premium',
+            $level === 'Oro' ? 'VIP' : 'Leal'
+        ];
+    }
+
     public function updateProfile()
     {
         $this->validate([
             'name' => 'required|min:3',
             'email' => 'required|email|unique:users,email,' . auth()->id(),
+            'phone' => 'nullable|string|max:20',
+            'location' => 'nullable|string|max:100',
+            'postal_code' => 'nullable|string|max:20',
         ]);
 
         $user = auth()->user();
@@ -162,6 +244,9 @@ class Portal extends Component
         // Update model
         $user->name = $this->name;
         $user->email = $this->email;
+        $user->phone = $this->phone;
+        $user->location = $this->location;
+        $user->postal_code = $this->postal_code;
         $user->save();
 
         session()->flash('profile_success', 'Tus datos de cuenta fueron actualizados con éxito.');

@@ -374,12 +374,22 @@
                         <div class="ml-4 flex flex-1 flex-col">
                             <div>
                                 <div class="flex justify-between text-sm font-medium text-on-surface">
-                                    <h4 class="font-bold {{ !empty($item['has_stock_error']) ? 'text-error' : '' }}">{{ $item['name'] }}</h4>
-                                    @if(!empty($item['has_stock_error']))
-                                        <p class="ml-4 font-bold text-outline-variant line-through">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
-                                    @else
-                                        <p class="ml-4 font-bold text-primary">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
-                                    @endif
+                                    <h4 class="font-bold {{ !empty($item['has_stock_error']) ? 'text-error' : '' }} pr-4">{{ $item['name'] }}</h4>
+                                    <div class="flex flex-col items-end flex-shrink-0">
+                                        @if(!empty($item['has_stock_error']))
+                                            <p class="font-bold text-outline-variant line-through">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
+                                        @else
+                                            @if(isset($item['discount']) && $item['discount'] > 0)
+                                                <span class="text-[10px] font-bold text-outline-variant line-through block text-right mb-0.5">${{ number_format($item['original_price'] * $item['quantity'], 0, ',', '.') }}</span>
+                                                <div class="font-bold text-primary flex items-center justify-end gap-1">
+                                                    <span class="bg-[#dcc48e]/20 text-[#8a6e30] px-1 py-0.5 rounded text-[9px] font-bold uppercase">-{{ $item['discount'] }}%</span>
+                                                    ${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
+                                                </div>
+                                            @else
+                                                <p class="font-bold text-primary">${{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
+                                            @endif
+                                        @endif
+                                    </div>
                                 </div>
                                 <p class="mt-1 text-xs text-secondary">{{ $item['size'] ?? 'Decant 10ml' }} · {{ $item['type'] ?? 'Aroma' }}</p>
                                 @if(!empty($item['has_stock_error']))

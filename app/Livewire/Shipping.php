@@ -27,6 +27,17 @@ class Shipping extends Component
 
     public function mount()
     {
+        if (auth()->check()) {
+            $user = auth()->user();
+            $this->phone = $user->phone ?? '';
+            $this->postal_code = $user->postal_code ?? '';
+            // Si tiene location (ej. "Buenos Aires, Argentina"), intentamos usar la primera parte como ciudad
+            if ($user->location) {
+                $parts = explode(',', $user->location);
+                $this->city = trim($parts[0]);
+            }
+        }
+
         $content = \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->content();
         $this->items = [];
         foreach ($content as $item) {
@@ -44,6 +55,8 @@ class Shipping extends Component
                 'type' => $item->options->type ?? 'Fragancia',
                 'size' => $item->options->size ?? '50ml',
                 'price' => $item->price,
+                'original_price' => $item->options->original_price ?? $item->price,
+                'discount' => $item->options->discount ?? 0,
                 'quantity' => $item->qty,
                 'img' => $item->options->image ?? '',
                 'has_stock_error' => $hasStockError

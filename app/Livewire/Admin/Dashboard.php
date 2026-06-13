@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Category;
+use App\Models\Pack;
 
 #[Title('Administración & CRM - Esencia')]
 class Dashboard extends Component
@@ -22,6 +23,7 @@ class Dashboard extends Component
     public $iaDocumentationEnabled = true;
     public $enabledMetrics = [];
     public $clubCologneEnabled = true;
+    public $packsSectionEnabled = true;
 
     // Estado del Formulario de Creación de Producto
     public $newName = '';
@@ -33,6 +35,14 @@ class Dashboard extends Component
     public $newCitrus = 30;
     public $newFloral = 20;
     public $newImage;
+
+    // Estado del Formulario de Creación de Pack
+    public $newPackName = '';
+    public $newPackPrice = 0;
+    public $newPackDiscount = 0;
+    public $newPackDescription = '';
+    public $newPackImage;
+    public $selectedPackProducts = [];
 
     // Propiedad para el Plan
     public $currentPlanName = 'CUENTA PREMIUM';
@@ -56,6 +66,7 @@ class Dashboard extends Component
 
         $this->iaDocumentationEnabled = cache('feature_ia_documentation_enabled', true);
         $this->clubCologneEnabled = cache('club_cologne_enabled', true);
+        $this->packsSectionEnabled = cache('packs_section_enabled', true);
         
         $this->enabledMetrics = cache()->get('metrics_config_global', [
             'Ingresos totales' => true,
@@ -262,6 +273,50 @@ class Dashboard extends Component
         }
     }
 
+    public function togglePackProduct($productId)
+    {
+        if (in_array($productId, $this->selectedPackProducts)) {
+            $this->selectedPackProducts = array_diff($this->selectedPackProducts, [$productId]);
+        } else {
+            $this->selectedPackProducts[] = $productId;
+        }
+    }
+
+    public function createPack()
+    {
+        $this->validate([
+            'newPackName' => 'required|min:3',
+            'newPackPrice' => 'required|numeric|min:1',
+            'newPackDescription' => 'required',
+            'selectedPackProducts' => 'required|array|min:2',
+        ], [
+            'selectedPackProducts.min' => 'Debes seleccionar al menos 2 productos para agrupar en un pack.',
+        ]);
+
+        $imagePath = null;
+        if ($this->newPackImage) {
+            $imagePath = $this->newPackImage->store('packs', 'public');
+        }
+
+        Pack::create([
+            'name' => $this->newPackName,
+            'price' => $this->newPackPrice,
+            'discount' => (int)$this->newPackDiscount,
+            'description' => $this->newPackDescription,
+            'image' => $imagePath,
+            'product_ids' => $this->selectedPackProducts,
+        ]);
+
+        session()->flash('pack_success', 'El pack ha sido creado con éxito en la base de datos.');
+        
+        $this->newPackName = '';
+        $this->newPackPrice = 0;
+        $this->newPackDiscount = 0;
+        $this->newPackDescription = '';
+        $this->newPackImage = null;
+        $this->selectedPackProducts = [];
+    }
+
     // --- ACCIONES DE PEDIDOS ---
     public function getOrdersProperty()
     {
@@ -290,6 +345,17 @@ class Dashboard extends Component
         cache(['club_cologne_enabled' => $this->clubCologneEnabled]);
         $status = $this->clubCologneEnabled ? 'habilitado' : 'deshabilitado';
         session()->flash('message', "El Club de Cologne ha sido {$status}.");
+    }
+
+    public function togglePacksSection()
+    {
+        $this->packsSectionEnabled = !$this->packsSectionEnabled;
+        cache(['packs_section_enabled' => $this->packsSectionEnabled]);
+        $status = $this->packsSectionEnabled ? 'habilitada' : 'deshabilitada';
+        
+        $this->dispatch('packs-section-toggled');
+        
+        session()->flash('message', "La sección Packs & Colecciones ha sido {$status} en la tienda.");
     }
 
     public function render()

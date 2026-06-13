@@ -26,7 +26,7 @@
                                     <h3 class="text-xl font-headline font-bold text-on-surface">{{ $item['name'] }}</h3>
                                     <p class="text-sm text-secondary">{{ $item['type'] }}</p>
                                 </div>
-                                <button wire:click="removeItem({{ $item['id'] }})" aria-label="Eliminar" class="text-outline hover:text-error transition-colors">
+                                <button wire:click="removeItem('{{ $item['id'] }}')" aria-label="Eliminar" class="text-outline hover:text-error transition-colors">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             </div>
@@ -35,11 +35,11 @@
                             </div>
                             <div class="flex justify-between items-center mt-auto w-full">
                                 <div class="flex items-center gap-3 bg-surface-container-low rounded-lg p-1 border border-outline-variant/30">
-                                    <button wire:click="decreaseQuantity({{ $item['id'] }})" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+                                    <button wire:click="decreaseQuantity('{{ $item['id'] }}')" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
                                         <span class="material-symbols-outlined text-sm">remove</span>
                                     </button>
                                     <span class="font-bold text-on-surface w-4 text-center">{{ $item['quantity'] }}</span>
-                                    <button wire:click="increaseQuantity({{ $item['id'] }})" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+                                    <button wire:click="increaseQuantity('{{ $item['id'] }}')" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
                                         <span class="material-symbols-outlined text-sm">add</span>
                                     </button>
                                 </div>
@@ -108,21 +108,30 @@
                 </div>
 
                 <!-- Cross-selling Inteligente -->
-                @if (!collect($items)->contains('id', 3))
+                @if ($this->suggestion)
+                    @php
+                        $sugg = $this->suggestion;
+                        $isPack = $sugg->is_pack_model;
+                        $suggName = $sugg->name;
+                        $suggDesc = $isPack ? 'Colección Exclusiva' : ($sugg->category ? $sugg->category->name : 'Fragancia Popular');
+                        $suggImg = $sugg->image ? (str_contains($sugg->image, 'http') ? $sugg->image : asset('storage/'.$sugg->image)) : 'https://placehold.co/600x400/e9e4d4/2f5a43?text='.urlencode($sugg->name);
+                        $suggPrice = $sugg->discounted_price;
+                        $suggDescText = Str::limit($sugg->description ?? 'Añade esta increíble esencia a tu colección y descubre nuevas notas aromáticas.', 90);
+                    @endphp
                     <div class="bg-surface rounded-xl p-6 shadow-[0_4px_20px_rgba(46,50,48,0.06)] border border-tertiary/30 relative overflow-hidden group">
                         <div class="absolute top-0 right-0 bg-tertiary text-on-tertiary text-xs px-3 py-1 rounded-bl-lg font-bold flex items-center gap-1 z-10 shadow-sm">
                             <span class="material-symbols-outlined text-[14px]">auto_awesome</span> Sugerencia
                         </div>
-                        <h3 class="text-lg font-headline font-bold text-on-surface mb-1 mt-2">Discovery Set</h3>
-                        <p class="text-sm text-secondary mb-4">Pack Temático "Bosque Profundo"</p>
+                        <h3 class="text-lg font-headline font-bold text-on-surface mb-1 mt-2">{{ $suggName }}</h3>
+                        <p class="text-sm text-secondary mb-4">{{ $suggDesc }}</p>
                         <div class="aspect-[4/3] rounded-lg overflow-hidden bg-surface-container mb-4 relative">
-                            <img alt="Discovery Set Box" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjaiTcbzPSfNSen_8KeCj9tg6snb-wsNFNsVOjUyihLc6tFrJr1zhdwjDNlZaNwS-o00FVl0ISAYTjni3cXfA2LADJrvJyJIP6ZQqrqtQ_vr5wiFqO792DJqbUWSfyzUE6S-wV6hT-KB1UUFu1IrD3vJ3rVQH2qxdfxhTFjq7orQaD-Uit0rCrpS-cLWt66ckUvsKy-Khnm_e_Npg8A3pyf6TkaUqGdsFQgeTWPSn3zVzdNw5eRQKhq_hLAkhW7oe-1xU7ZOGVqrA"/>
+                            <img alt="{{ $suggName }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" src="{{ $suggImg }}"/>
                             <div class="absolute inset-0 bg-gradient-to-t from-surface/80 to-transparent flex items-end p-3">
-                                <span class="text-sm font-bold text-primary bg-surface/90 px-2 py-1 rounded backdrop-blur-sm">$32.000</span>
+                                <span class="text-sm font-bold text-primary bg-surface/90 px-2 py-1 rounded backdrop-blur-sm">${{ number_format($suggPrice, 0, ',', '.') }}</span>
                             </div>
                         </div>
-                        <p class="text-sm text-on-surface-variant mb-5 line-clamp-2">Explora 3 fragancias amaderadas adicionales que complementan perfectamente el Santal Raíz que ya elegiste.</p>
-                        <button wire:click="addDiscoverySet" class="w-full bg-surface-container-highest text-primary font-bold py-2.5 rounded-lg border border-primary/20 hover:bg-primary hover:text-on-primary transition-colors flex justify-center items-center gap-2">
+                        <p class="text-sm text-on-surface-variant mb-5 line-clamp-2">{{ $suggDescText }}</p>
+                        <button wire:click="addSuggestion({{ $sugg->id }}, {{ $isPack ? 'true' : 'false' }})" class="w-full bg-surface-container-highest text-primary font-bold py-2.5 rounded-lg border border-primary/20 hover:bg-primary hover:text-on-primary transition-colors flex justify-center items-center gap-2">
                             <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
                             Añadir a la cesta
                         </button>

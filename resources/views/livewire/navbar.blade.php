@@ -17,11 +17,13 @@
                     Catálogo
                 </a>
             </li>
+            @if(cache('packs_section_enabled', true))
             <li>
                 <a class="flex items-center h-full py-2 px-3 active:scale-95 duration-150 {{ request()->routeIs('packs') ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-secondary-container transition-colors rounded' }}" href="{{ route('packs') }}" wire:navigate>
                     Packs
                 </a>
             </li>
+            @endif
             <li>
                 <a class="flex items-center h-full py-2 px-3 active:scale-95 duration-150 {{ request()->routeIs('perfil-olfativo') ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-secondary-container transition-colors rounded' }}" href="{{ route('perfil-olfativo') }}" wire:navigate>
                     Mi Perfil Olfativo
