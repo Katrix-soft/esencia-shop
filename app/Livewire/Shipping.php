@@ -16,14 +16,25 @@ class Shipping extends Component
     public $shipping_method = 'standard'; // standard, express, pickup
     public $items = [];
 
-    protected $rules = [
-        'address' => 'required|string|min:5',
-        'city' => 'required|string|min:3',
-        'postal_code' => 'required|string|min:4',
-        'province' => 'required|string',
-        'phone' => 'required|string|min:8',
-        'shipping_method' => 'required|in:standard,express,pickup',
-    ];
+    protected function rules()
+    {
+        $config = cache('metrics_config_global', []);
+        $hasShippingMethods = ($config['Envío a Domicilio'] ?? true) || ($config['Envío Express'] ?? true) || ($config['Retiro en Punto de Venta'] ?? true);
+
+        $rules = [
+            'address' => 'required|string|min:5',
+            'city' => 'required|string|min:3',
+            'postal_code' => 'required|string|min:4',
+            'province' => 'required|string',
+            'phone' => 'required|string|min:8',
+        ];
+
+        if ($hasShippingMethods) {
+            $rules['shipping_method'] = 'required|in:standard,express,pickup';
+        }
+
+        return $rules;
+    }
 
     public function mount()
     {
@@ -36,6 +47,21 @@ class Shipping extends Component
                 $parts = explode(',', $user->location);
                 $this->city = trim($parts[0]);
             }
+        }
+
+        $config = cache('metrics_config_global', []);
+        $domicilio = $config['Envío a Domicilio'] ?? true;
+        $express = $config['Envío Express'] ?? true;
+        $retiro = $config['Retiro en Punto de Venta'] ?? true;
+
+        if ($domicilio) {
+            $this->shipping_method = 'standard';
+        } elseif ($express) {
+            $this->shipping_method = 'express';
+        } elseif ($retiro) {
+            $this->shipping_method = 'pickup';
+        } else {
+            $this->shipping_method = '';
         }
 
         $content = \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->content();
@@ -101,6 +127,8 @@ class Shipping extends Component
             case 'express':
                 return 6000;
             case 'pickup':
+            case '':
+            case null:
                 return 0;
             default:
                 return 4500;

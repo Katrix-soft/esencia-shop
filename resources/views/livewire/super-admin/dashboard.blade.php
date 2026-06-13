@@ -174,7 +174,7 @@
             @php
                 $ventasActivas = (!empty($enabledMetrics['Ingresos totales']) ? 1 : 0) + (!empty($enabledMetrics['Ticket promedio']) ? 1 : 0) + (!empty($enabledMetrics['Ventas vs mes anterior']) ? 1 : 0) + (!empty($enabledMetrics['Gráfico de ventas']) ? 1 : 0);
                 $ordenesActivas = (!empty($enabledMetrics['Órdenes del día']) ? 1 : 0) + (!empty($enabledMetrics['Órdenes pendientes']) ? 1 : 0) + (!empty($enabledMetrics['Órdenes canceladas']) ? 1 : 0);
-                $logisticaActivas = (!empty($enabledMetrics['Envíos activos']) ? 1 : 0);
+                $logisticaActivas = (!empty($enabledMetrics['Envío a Domicilio']) ? 1 : 0) + (!empty($enabledMetrics['Envío Express']) ? 1 : 0) + (!empty($enabledMetrics['Retiro en Punto de Venta']) ? 1 : 0);
                 $productosActivas = (!empty($enabledMetrics['Más vendidos']) ? 1 : 0) + (!empty($enabledMetrics['Stock bajo']) ? 1 : 0) + (!empty($enabledMetrics['Más visitados']) ? 1 : 0);
                 $usuariosActivas = (!empty($enabledMetrics['Nuevos registros']) ? 1 : 0) + (!empty($enabledMetrics['Clientes recurrentes']) ? 1 : 0);
             @endphp
@@ -210,7 +210,7 @@
                         <span class="material-symbols-outlined">local_shipping</span>
                     </div>
                     <h3 class="text-xs font-bold text-gray-800 tracking-wider mb-2">LOGÍSTICA</h3>
-                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">{{ $logisticaActivas }} / 1 activas</span>
+                    <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded">{{ $logisticaActivas }} / 3 activas</span>
                     <button wire:click="toggleMetric('logistica')" class="mt-4 flex items-center justify-center gap-1 bg-indigo-50 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-100 transition-colors uppercase tracking-wider">
                         todo <span class="material-symbols-outlined text-[14px]">{{ $expandedMetric === 'logistica' ? 'expand_less' : 'expand_more' }}</span>
                     </button>
@@ -359,7 +359,7 @@
                     <div class="flex items-center gap-3">
                         <span class="material-symbols-outlined text-indigo-600">local_shipping</span>
                         <h3 class="text-sm font-bold text-gray-800 tracking-wider">LOGÍSTICA</h3>
-                        <span class="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded">{{ $logisticaActivas }} / 1 activas</span>
+                        <span class="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded">{{ $logisticaActivas }} / 3 activas</span>
                     </div>
                     <button wire:click="toggleMetric('logistica')" class="flex items-center justify-center gap-1 bg-indigo-100 text-indigo-600 text-[11px] font-bold px-3 py-1 rounded hover:bg-indigo-200 transition-colors uppercase tracking-wider">
                         todo <span class="material-symbols-outlined text-[14px]">expand_less</span>
@@ -367,15 +367,35 @@
                 </div>
                 <!-- List -->
                 <div class="divide-y divide-gray-50">
-                    <!-- Item 1 -->
+                    <!-- Item 1: Domicilio -->
                     <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
-                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Envíos activos']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Envíos activos')">
-                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Envíos activos']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Envío a Domicilio']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Envío a Domicilio')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Envío a Domicilio']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
                         </div>
                         <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
                             <span class="material-symbols-outlined text-[16px]">local_shipping</span>
                         </div>
-                        <span class="text-sm font-bold text-gray-700">Envíos activos</span>
+                        <span class="text-sm font-bold text-gray-700">Envío a Domicilio</span>
+                    </div>
+                    <!-- Item 2: Express -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Envío Express']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Envío Express')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Envío Express']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">two_wheeler</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Envío Express (Motos)</span>
+                    </div>
+                    <!-- Item 3: Retiro -->
+                    <div class="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+                        <div class="w-10 h-5 {{ !empty($enabledMetrics['Retiro en Punto de Venta']) ? 'bg-indigo-600' : 'bg-gray-300' }} rounded-full relative cursor-pointer transition-colors duration-200" wire:click="toggleMetricVisibility('Retiro en Punto de Venta')">
+                            <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 {{ !empty($enabledMetrics['Retiro en Punto de Venta']) ? 'right-0.5' : 'left-0.5' }} shadow-sm transition-all duration-200"></div>
+                        </div>
+                        <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[16px]">storefront</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">Retiro en Punto de Venta</span>
                     </div>
                 </div>
             </div>

@@ -1,10 +1,36 @@
-<div class="flex bg-[#f4f2ec] font-body relative">
+<div x-data="{ sidebarOpen: false }" class="flex bg-[#f4f2ec] font-body relative min-h-screen">
+    <!-- Overlay para móvil -->
+    <div x-show="sidebarOpen" @click="sidebarOpen = false" x-transition.opacity class="fixed inset-0 bg-black/50 z-20 md:hidden" style="display: none;"></div>
+
     <!-- Sidebar -->
-    <aside class="w-64 bg-[#14231A] text-white flex flex-col transition-all duration-300 shadow-xl z-20 sticky top-0 h-screen">
+    <aside class="fixed md:sticky top-0 left-0 h-screen w-64 bg-[#14231A] text-white flex flex-col transition-transform duration-300 shadow-xl z-30 md:translate-x-0" :class="{'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen}">
         <!-- Logo -->
-        <div class="p-8 pb-6 flex flex-col items-center justify-center text-center">
+        <div class="p-8 pb-6 flex flex-col items-center justify-center text-center relative">
+            <button @click="sidebarOpen = false" class="absolute top-4 right-4 text-white/50 hover:text-white md:hidden">
+                <span class="material-symbols-outlined">close</span>
+            </button>
             <h2 class="text-[26px] font-display font-bold tracking-[0.15em] text-[#dcc48e]">ESENCIA</h2>
             <p class="text-[9px] tracking-[0.3em] text-[#dcc48e]/60 uppercase mt-1">Parfumerie</p>
+        </div>
+
+        <!-- Usuario / Plan (Movido arriba) -->
+        <div class="px-6 py-4 border-y border-white/10 mb-2 bg-white/5">
+            <p class="text-[10px] text-white/40 mb-3 tracking-widest uppercase text-center">{{ $currentPlanName ?? 'CUENTA PREMIUM' }}</p>
+            <div class="flex items-center gap-3 justify-center">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=4a7c59&color=fff&rounded=true" class="w-10 h-10 shadow-lg rounded-full">
+                <div class="text-left w-full overflow-hidden">
+                    <p class="text-[13px] font-bold text-white leading-tight truncate" title="{{ auth()->user()->name ?? 'Administrador' }}">{{ auth()->user()->name ?? 'Administrador' }}</p>
+                    <p class="text-[10px] text-[#dcc48e] uppercase tracking-wider">
+                        @php
+                            $roleName = 'Admin';
+                            if (auth()->check() && auth()->user()->roles && auth()->user()->roles->count() > 0) {
+                                $roleName = auth()->user()->roles->first()->name;
+                            }
+                            echo ucfirst($roleName);
+                        @endphp
+                    </p>
+                </div>
+            </div>
         </div>
         
         <!-- Navigation -->
@@ -32,26 +58,26 @@
                 <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'packs' ? 'font-variation-settings: \'FILL\' 1' : '' }}">redeem</span>
                 <span class="text-[13px]">Packs & Colecciones</span>
             </button>
-        </nav>
 
-        <div class="p-6 border-t border-white/10 mt-auto">
-            <p class="text-[10px] text-white/40 mb-3 tracking-widest uppercase text-center">{{ $currentPlanName ?? 'CUENTA PREMIUM' }}</p>
-            <div class="flex items-center gap-3">
-                <img src="https://ui-avatars.com/api/?name=Super+Admin&background=4a7c59&color=fff&rounded=true" class="w-10 h-10 shadow-lg">
-                <div>
-                    <p class="text-[13px] font-bold text-white leading-tight">Super Admin</p>
-                    <p class="text-[10px] text-[#dcc48e]">Owner</p>
-                </div>
-            </div>
-        </div>
+            @if(auth()->check() && auth()->user()->hasRole('superadmin'))
+            <p class="px-4 text-[10px] text-white/40 uppercase tracking-widest font-bold mb-3 mt-8">Sistema</p>
+            <a href="{{ route('superadmin.dashboard') }}" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-white/60 hover:text-white hover:bg-[#d32f2f]/20 hover:text-[#ffcdd2]">
+                <span class="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+                <span class="text-[13px] font-bold">Panel Super Admin</span>
+            </a>
+            @endif
+        </nav>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0">
+    <main class="flex-1 flex flex-col min-w-0 w-full overflow-x-hidden">
         <!-- Topbar -->
-        <header class="bg-[#f4f2ec] py-6 px-8 flex justify-between items-center z-10">
-            <div class="flex items-center gap-4">
-                <h1 class="text-2xl font-headline font-bold text-on-surface tracking-tight flex items-center gap-2">
+        <header class="bg-[#f4f2ec] py-4 md:py-6 px-4 md:px-8 flex justify-between items-center z-10 sticky top-0">
+            <div class="flex items-center gap-3 md:gap-4">
+                <button @click="sidebarOpen = true" class="md:hidden text-on-surface-variant hover:text-primary p-2 -ml-2 rounded-lg bg-white shadow-sm border border-outline-variant/10">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h1 class="text-xl md:text-2xl font-headline font-bold text-on-surface tracking-tight flex items-center gap-2">
                     @if($activeTab === 'crm') Dashboard General
                     @elseif($activeTab === 'products') Gestión de Inventario
                     @elseif($activeTab === 'orders') Estado de Pedidos
@@ -87,7 +113,7 @@
         </header>
 
         <!-- Scrollable content area -->
-        <div class="flex-1 px-8 pb-12">
+        <div class="flex-1 px-4 md:px-8 pb-12 overflow-x-hidden">
             
             <!-- Tab 1: CRM & Insights -->
             @if($activeTab === 'crm')

@@ -287,6 +287,12 @@
             </section>
 
             <!-- Shipping Methods -->
+            @php
+                $metricsConfig = cache('metrics_config_global', []);
+                $hasShippingMethods = ($metricsConfig['Envío a Domicilio'] ?? true) || ($metricsConfig['Envío Express'] ?? true) || ($metricsConfig['Retiro en Punto de Venta'] ?? true);
+            @endphp
+            
+            @if($hasShippingMethods)
             <section class="bg-surface-bright rounded-xl p-6 sm:p-8 shadow-[0_4px_20px_rgba(46,50,48,0.06)] border border-outline-variant/30">
                 <h2 class="text-2xl font-headline font-bold text-on-surface mb-6 flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary">local_shipping</span>
@@ -297,6 +303,7 @@
                     <legend class="sr-only">Selecciona un método de envío</legend>
                     
                     <!-- Option 1 -->
+                    @if($metricsConfig['Envío a Domicilio'] ?? true)
                     <label class="relative flex cursor-pointer rounded-xl border p-4 shadow-sm focus:outline-none hover:bg-surface transition-all duration-200"
                            :class="$wire.shipping_method === 'standard' ? 'border-primary bg-surface-container-lowest' : 'border-outline-variant/55 bg-surface-container-lowest/50'">
                         <input class="mt-1 h-4 w-4 shrink-0 cursor-pointer border-outline-variant text-primary focus:ring-primary" name="shipping-method" type="radio" wire:model.live="shipping_method" value="standard"/>
@@ -311,8 +318,10 @@
                             </span>
                         </span>
                     </label>
+                    @endif
 
                     <!-- Option 2 -->
+                    @if($metricsConfig['Envío Express'] ?? true)
                     <label class="relative flex cursor-pointer rounded-xl border p-4 shadow-sm focus:outline-none hover:bg-surface transition-all duration-200"
                            :class="$wire.shipping_method === 'express' ? 'border-primary bg-surface-container-lowest' : 'border-outline-variant/55 bg-surface-container-lowest/50'">
                         <input class="mt-1 h-4 w-4 shrink-0 cursor-pointer border-outline-variant text-primary focus:ring-primary" name="shipping-method" type="radio" wire:model.live="shipping_method" value="express"/>
@@ -330,8 +339,10 @@
                             </span>
                         </span>
                     </label>
+                    @endif
 
                     <!-- Option 3 -->
+                    @if($metricsConfig['Retiro en Punto de Venta'] ?? true)
                     <label class="relative flex cursor-pointer rounded-xl border p-4 shadow-sm focus:outline-none hover:bg-surface transition-all duration-200"
                            :class="$wire.shipping_method === 'pickup' ? 'border-primary bg-surface-container-lowest' : 'border-outline-variant/55 bg-surface-container-lowest/50'">
                         <input class="mt-1 h-4 w-4 shrink-0 cursor-pointer border-outline-variant text-primary focus:ring-primary" name="shipping-method" type="radio" wire:model.live="shipping_method" value="pickup"/>
@@ -346,9 +357,11 @@
                             </span>
                         </span>
                     </label>
+                    @endif
                 </fieldset>
                 @error('shipping_method') <span class="text-xs text-error mt-1 block font-semibold">{{ $message }}</span> @enderror
             </section>
+            @endif
         </div>
 
         <!-- Right Column: Order Summary -->
