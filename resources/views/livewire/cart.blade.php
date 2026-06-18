@@ -82,7 +82,7 @@
                         </div>
                     </div>
                     <!-- Points Badge -->
-                    @if(cache('club_cologne_enabled', true))
+                    @if(cache('club_cologne_enabled', true) && cache('plan_id', '') !== 'toilette')
                     <div class="bg-tertiary-fixed/40 rounded-lg p-4 flex items-center gap-3 border border-tertiary/20">
                         <div class="bg-tertiary text-on-tertiary rounded-full p-2 flex items-center justify-center">
                             <span class="material-symbols-outlined text-sm">spa</span>

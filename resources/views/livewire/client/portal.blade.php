@@ -16,7 +16,7 @@
 
                 <!-- Nav links -->
                 <nav class="space-y-1">
-                    @if(cache('club_cologne_enabled', true))
+                    @if(cache('club_cologne_enabled', true) && cache('plan_id', '') !== 'toilette')
                     <button wire:click="switchSection('fidelity')" class="w-full text-left px-4 py-3 rounded-xl text-xs font-bold font-body transition-all flex items-center gap-3 {{ $activeSection === 'fidelity' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-primary hover:bg-secondary-container' }}">
                         <span class="material-symbols-outlined text-[18px]">verified</span>
                         Club de Cologne (Fidelidad)
@@ -41,7 +41,7 @@
         <!-- Main Content Area -->
         <main class="lg:col-span-9">
             <!-- Section 1: Fidelity / Club Semillas -->
-            @if($activeSection === 'fidelity' && cache('club_cologne_enabled', true))
+            @if($activeSection === 'fidelity' && cache('club_cologne_enabled', true) && cache('plan_id', '') !== 'toilette')
                 <div class="space-y-8 animate-fade-in">
                     <!-- Head -->
                     <div>

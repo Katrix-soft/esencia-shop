@@ -177,7 +177,7 @@
             <h5 class="font-bold text-on-surface text-xs mb-0.5 font-body">Beneficios de tu Cuenta</h5>
             <p class="text-xs text-on-surface-variant/90 leading-relaxed font-body">
                 Con tu cuenta
-                @if(cache('club_cologne_enabled', true))
+                @if(cache('club_cologne_enabled', true) && cache('plan_id', '') !== 'toilette')
                 acumulas puntos de descuento,
                 @endif
                 guardas tus fragancias favoritas y accedes a preventas exclusivas de decants importados.

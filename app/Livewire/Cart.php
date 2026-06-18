@@ -115,11 +115,18 @@ class Cart extends Component
 
     public function getPointsProperty()
     {
+        if (cache('plan_id', '') === 'toilette') {
+            return 0;
+        }
         return round($this->subtotal / 100);
     }
 
     public function getSuggestionProperty()
     {
+        if (cache('plan_id', '') === 'toilette') {
+            return null;
+        }
+
         $cartProductIds = collect($this->items)->filter(fn($i) => is_numeric($i['id']))->pluck('id')->toArray();
         $cartPackIds = collect($this->items)->filter(fn($i) => str_starts_with((string)$i['id'], 'pack_'))->pluck('id')->map(fn($id) => str_replace('pack_', '', $id))->toArray();
 

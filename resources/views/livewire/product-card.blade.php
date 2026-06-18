@@ -15,7 +15,7 @@
         @endphp
 
         <!-- Club Points Badge overlay -->
-        @if(cache('club_cologne_enabled', true))
+        @if(cache('club_cologne_enabled', true) && cache('plan_id', '') !== 'toilette')
         <div class="absolute bottom-4 left-4">
             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/95 backdrop-blur-md text-[#2f5a43] rounded-full text-[11px] font-bold shadow-sm border border-[#e8dfce]/50">
                 <span class="material-symbols-outlined text-[14px] text-[#4a7c59]">loyalty</span>
