@@ -50,10 +50,12 @@
                 <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'orders' ? 'font-variation-settings: \'FILL\' 1' : '' }}">receipt_long</span>
                 <span class="text-[13px]">Pedidos</span>
             </button>
+            @if($hasPromotionsFeature)
             <button wire:click="switchTab('promotions')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all {{ $activeTab === 'promotions' ? 'bg-[#4a7c59] text-white font-bold shadow-md' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
                 <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'promotions' ? 'font-variation-settings: \'FILL\' 1' : '' }}">sell</span>
                 <span class="text-[13px]">Promociones</span>
             </button>
+            @endif
             <button wire:click="switchTab('packs')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all {{ $activeTab === 'packs' ? 'bg-[#4a7c59] text-white font-bold shadow-md' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
                 <span class="material-symbols-outlined text-[20px]" style="{{ $activeTab === 'packs' ? 'font-variation-settings: \'FILL\' 1' : '' }}">redeem</span>
                 <span class="text-[13px]">Packs & Colecciones</span>
@@ -451,23 +453,25 @@
             @endif
 
             <!-- Tab 4: Promociones -->
-            @if($activeTab === 'promotions')
-                <div class="bg-white rounded-[20px] p-8 shadow-[0_2px_15px_rgba(46,50,48,0.04)] animate-fade-in text-center py-16">
-                    <span class="material-symbols-outlined text-[48px] text-[#4a7c59] mb-4">sell</span>
-                    <h3 class="text-2xl font-bold font-headline text-on-surface mb-2">Gestión de Promociones</h3>
-                    <p class="text-on-surface-variant text-[13px] font-body mb-8 max-w-md mx-auto">Administra los descuentos y el programa de fidelidad para tus clientes más leales.</p>
-                    
-                    <button wire:click="toggleClubCologne" class="inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold shadow-md transition-all {{ $clubCologneEnabled ? 'bg-[#4a7c59] hover:bg-[#3d6649] text-white' : 'bg-gray-200 text-gray-500 hover:bg-gray-300' }}">
-                        <span class="material-symbols-outlined text-[20px]">{{ $clubCologneEnabled ? 'verified' : 'block' }}</span>
-                        {{ $clubCologneEnabled ? 'Club de Cologne (Activo)' : 'Club de Cologne (Inactivo)' }}
-                    </button>
+            @if($hasPromotionsFeature)
+                @if($activeTab === 'promotions')
+                    <div class="bg-white rounded-[20px] p-8 shadow-[0_2px_15px_rgba(46,50,48,0.04)] animate-fade-in text-center py-16">
+                        <span class="material-symbols-outlined text-[48px] text-[#4a7c59] mb-4">sell</span>
+                        <h3 class="text-2xl font-bold font-headline text-on-surface mb-2">Gestión de Promociones</h3>
+                        <p class="text-on-surface-variant text-[13px] font-body mb-8 max-w-md mx-auto">Administra los descuentos y el programa de fidelidad para tus clientes más leales.</p>
+                        
+                        <button wire:click="toggleClubCologne" class="inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold shadow-md transition-all {{ $clubCologneEnabled ? 'bg-[#4a7c59] hover:bg-[#3d6649] text-white' : 'bg-gray-200 text-gray-500 hover:bg-gray-300' }}">
+                            <span class="material-symbols-outlined text-[20px]">{{ $clubCologneEnabled ? 'verified' : 'block' }}</span>
+                            {{ $clubCologneEnabled ? 'Club de Cologne (Activo)' : 'Club de Cologne (Inactivo)' }}
+                        </button>
 
-                    @if(session()->has('message'))
-                        <div class="mt-4 text-sm font-bold {{ $clubCologneEnabled ? 'text-[#4a7c59]' : 'text-gray-500' }}">
-                            {{ session('message') }}
-                        </div>
-                    @endif
-                </div>
+                        @if(session()->has('message'))
+                            <div class="mt-4 text-sm font-bold {{ $clubCologneEnabled ? 'text-[#4a7c59]' : 'text-gray-500' }}">
+                                {{ session('message') }}
+                            </div>
+                        @endif
+                    </div>
+                @endif
             @endif
 
             <!-- Tab 5: Packs y Colecciones -->

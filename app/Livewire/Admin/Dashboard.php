@@ -24,6 +24,7 @@ class Dashboard extends Component
     public $enabledMetrics = [];
     public $clubCologneEnabled = true;
     public $packsSectionEnabled = true;
+    public $hasPromotionsFeature = true;
 
     // Estado del Formulario de Creación de Producto
     public $newName = '';
@@ -87,19 +88,27 @@ class Dashboard extends Component
         $planId = cache('plan_id', '');
         if ($planId === 'toilette') {
             $this->currentPlanName = 'PLAN TOILETTE';
+            $this->hasPromotionsFeature = false;
         } elseif ($planId === 'parfum') {
             $this->currentPlanName = 'PLAN PARFUM';
+            $this->hasPromotionsFeature = true;
         } elseif ($planId === 'extracto' || $planId === 'premium') {
             $this->currentPlanName = 'PLAN EXTRACTO';
+            $this->hasPromotionsFeature = true;
         } elseif (!empty($planId)) {
             $this->currentPlanName = strtoupper($planId);
+            $this->hasPromotionsFeature = true;
         } else {
             $this->currentPlanName = 'CUENTA PREMIUM';
+            $this->hasPromotionsFeature = true;
         }
     }
 
     public function switchTab($tab)
     {
+        if ($tab === 'promotions' && !$this->hasPromotionsFeature) {
+            return;
+        }
         $this->activeTab = $tab;
     }
 
