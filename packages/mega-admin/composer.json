@@ -1,0 +1,31 @@
+{
+    "name": "katrix-soft/mega-admin",
+    "description": "Librería Mega Admin para la gestión de roles y administración",
+    "type": "library",
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "livewire/livewire": "^3.0|^4.0",
+        "spatie/laravel-permission": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "KatrixSoft\\MegaAdmin\\": "src/",
+            "KatrixSoft\\MegaAdmin\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "KatrixSoft\\MegaAdmin\\MegaAdminServiceProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "Katrix Soft"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

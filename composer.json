@@ -8,14 +8,14 @@
     "repositories": [
         {
             "type": "path",
-            "url": "../mega-admin",
+            "url": "./packages/mega-admin",
             "options": {
                 "symlink": true
             }
         },
         {
             "type": "path",
-            "url": "../katrix-cart",
+            "url": "./packages/katrix-cart",
             "options": {
                 "symlink": true
             }
