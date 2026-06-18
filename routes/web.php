@@ -30,3 +30,24 @@ Route::get('/plans', function () {
     return response()->json(config('plans', []));
 });
 
+Route::get('/setup-superadmin', function () {
+    try {
+        $superadminUser = \App\Models\User::firstOrCreate([
+            'email' => 'superadmin@katrix.com',
+        ], [
+            'name' => 'Super Administrador',
+            'password' => bcrypt('password'),
+        ]);
+
+        $superAdminRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'superadmin']);
+        
+        if (!$superadminUser->hasRole('superadmin')) {
+            $superadminUser->assignRole('superadmin');
+        }
+
+        return '¡Superadmin creado exitosamente! Ya puedes ir a /login e iniciar sesión con superadmin@katrix.com y la contraseña: password';
+    } catch (\Exception $e) {
+        return 'Error al crear el superadmin: ' . $e->getMessage();
+    }
+});
+
