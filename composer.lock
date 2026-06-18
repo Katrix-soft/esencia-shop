@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a45778272080be4a0646ada038377c06",
+    "content-hash": "004f1d3b2bd3107e56090888502bb402",
     "packages": [
         {
             "name": "brick/math",
@@ -1127,7 +1127,7 @@
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "../katrix-cart",
+                "url": "./packages/katrix-cart",
                 "reference": "ee51bdfc2e6d4037fd2128d6d8e1490fb35a74d7"
             },
             "require": {
@@ -1182,7 +1182,7 @@
             "version": "dev-main",
             "dist": {
                 "type": "path",
-                "url": "../mega-admin",
+                "url": "./packages/mega-admin",
                 "reference": "a34171f0a3d8b9011bb1f5b09671ff533e1ccf61"
             },
             "require": {
